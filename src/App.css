@@ -1,0 +1,147 @@
+.App {
+  text-align: center;
+
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.title-input{
+  text-align: left;
+  padding-left: 0.5em;
+}
+
+.padding-input{
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  padding-right: 0.5em;
+}
+.margin-button{
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em!important;
+  margin-left: 0.5em!important;
+  margin-right: 0.5em!important;
+}
+
+.align-left{
+  text-align: left!important;
+}
+
+.margin-principal-page{
+  margin-top: 5em !important;
+}
+
+.box-login{
+  height: 304px;
+  width: 432px;
+}
+
+.with-max-notification{
+  width: 100%;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.center-all{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.margin-top-pages{
+  width: 100%;
+  margin-top: 0em;
+  padding-left: 2em;
+  padding-right: 2em;
+  position: absolute;
+  z-index: 100;
+}
+
+.content-margin{
+  padding-top: 1em;
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-bottom: 1em;
+}
+
+.list-maintenance{
+  text-align: left;
+
+}
+
+.title-mant-content{
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+  padding-bottom: 1.5em;
+}
+
+.list-without-marks{
+  list-style-type: none !important;
+}
+
+.margin-block-inputs{
+    margin-top: 1em;
+    margin-bottom: 3em;
+}
+
+.select-align{
+  text-align: left;
+}
+.select-size{
+  width: 100% !important;
+}
+
+.ordered-list-images{
+  flex-wrap: nowrap;
+  border:1px black solid;
+  align-items: flex-start;
+}
+
+.item-list-image{
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.item-adapt-to-content{
+  display:inline-block;
+}
+.bloq-position-relative{
+  position: relative;
+}
+
+.item-inside-abs{
+  position: absolute;
+}
+
+.button-adapt-to-image{
+  margin-top: 0.5em;
+  margin-left: 0.1em;
+  margin-right: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+.button-padd-adapt-to-image{
+  padding-top: 2.5em;
+}
