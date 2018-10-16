@@ -5,6 +5,10 @@ import {Radio} from '../../../../inputs/radio/Radio'
 import {Select} from '../../../../inputs/select/Select'
 import {Categories} from '../../../../inputs/grid/Categories'
 import {InputArrayImages} from '../../../../inputs/images/InputArrayImages'
+import {SubgroupList} from '../../../../inputs/grid/SubgroupList'
+import {LinkColumn} from '../../../../inputs/grid/componentsColumns/LinkColumn'
+import {Users} from "../users/Users"
+import {UsersFormularyAssociation} from "../users/UsersFormularyAssociation"
 
 import firebase from 'firebase';
 import db from '../../../../../firebase'
@@ -33,6 +37,20 @@ export class AssociationFormulary extends Component{
   }
 
   render(){
+    var params
+    if(this.state.loading){
+      params = <div>loading...</div>
+    }else{
+      if(this.state.tabSelect==0){
+        params = this._paramsSection0()
+      }else if(this.state.tabSelect==1){
+        params = this._paramsSection1()
+      }else if(this.state.tabSelect==2){
+        params = this._paramsSection2()
+      }
+    }
+
+
     return(
       <div>
         <div className="list-maintenance title-mant-content">
@@ -43,14 +61,11 @@ export class AssociationFormulary extends Component{
           <ul>
             <li className={this._isActive(0)} onClick={() => this._changeActiveTab(0)}><a>Datos públicos</a></li>
             <li className={this._isActive(1)} onClick={() => this._changeActiveTab(1)}><a>Datos configuración</a></li>
+            <li className={this._isActive(1)} onClick={() => this._changeActiveTab(2)}><a>Usuarios acceso</a></li>
           </ul>
         </div>
-        <article className="margin-block-inputs">
-          {this.state.loading?
-            <div>loading...</div>
-            :
-            this._paramsSection0()
-          }
+        <article id={this.state.tabSelect} className="margin-block-inputs">
+          {params}
         </article>
         <div className="buttons">
           {this._hasErrorInFormulary() || this.firstTime ?
@@ -74,10 +89,6 @@ export class AssociationFormulary extends Component{
   }
 
   _respInput=(res, val, err)=>{
-    //this.props.onSave("hola")
-
-    //this._setError(res, err)
-
     console.log("ERROR TREEE -1", res, err);
     this.firstTime = false
     this.state.errorTree[res]=err
@@ -91,23 +102,33 @@ export class AssociationFormulary extends Component{
   }
 
   _paramsSection0=()=>{
-
-    if(this.state.tabSelect==0){//TAB 0
       return(
         <div>
-          <InputText inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
-          <InputText inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
-          <InputText inputTitle="Url Dominio" resourceName="domain" required={true} onResults={this._respInput} value={this.state.objectToSave.domain}/>
-
+          <InputText id="code" inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
+          <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
         </div>
       )
-    }else if(this.state.tabSelect==1){//TAB 1
-      return(
-        <div>
-        </div>
-      )
-    }
 
+  }
+  _paramsSection1=()=>{
+    return(
+      <div>
+        <InputText id="domain2" inputTitle="Url Dominio" resourceName="domain" required={true} onResults={this._respInput} value={this.state.objectToSave.domain}/>
+      </div>
+    )
+  }
+  _paramsSection2=()=>{
+    return(
+        //<SubgroupList inputTitle="Usuarios por asociación" url="userParams" columns={this._moutColumns()} filter={["idAssociation", "==", this.props.idUrl]}/>
+        <Users urlMapping="userParams" initialState="list" filter={["idAssociation.id", "==", this.props.idUrl]} personalizedComponentFormulary="association" isPopUpFromulary={true}/>
+    )
+  }
+
+  _moutColumns=()=>{
+    return( [
+      { key: 'codigoLink', name: 'Code', formatter: <LinkColumn nameLinkColumn="code" onResults={this._respuestaCampoLink}/>},
+      { key: 'name', name: 'Name'},
+      { key: 'idUserLevel', name: 'User level' }])
   }
 
   _loadArrayRadioButton=()=>{
@@ -123,12 +144,6 @@ export class AssociationFormulary extends Component{
     return arr
   }
 
-  _paramsSection1=()=>{
-    return(
-      <div>section 1</div>
-    )
-  }
-
   _paramsTab=(select)=>{
     switch (select) {
       case 0:
@@ -136,6 +151,9 @@ export class AssociationFormulary extends Component{
       break;
       case 1:
         this.setState({paramsMount:this._paramsSection1()})
+      break;
+      case 2:
+        this.setState({paramsMount:this._paramsSection2()})
       break;
 
     }
@@ -146,6 +164,7 @@ export class AssociationFormulary extends Component{
 		this.setState({
 			tabSelect:select
 		})
+    //this._paramsTab(select)
 	}
 	_isActive = (select) =>{
 		console.log("IS ACTIVE", select);

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 export class InputPassword extends Component{
   constructor(props){
     super(props)
+    
     if(this.props.value != null){
       this.value = this.props.value
       this.props.onResults(this.props.resourceName, this.value)

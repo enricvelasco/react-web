@@ -25,6 +25,9 @@ export class LateralMenu extends Component{
             </p>
             <ul className="menu-list">
               <li onClick={((e) => this._elementClicked(e, "association"))}><Link to='/association'>Asociaciones</Link></li>
+              <ul>
+                <li onClick={((e) => this._elementClicked(e, "associationShops"))}><Link to='/associationShops'>Tiendas de Asociaciones</Link></li>
+              </ul>
               <li onClick={((e) => this._elementClicked(e, "shopsWithoutAsoc"))}><Link to='/shopsWithoutAsoc'>Tiendas sin asociacion</Link></li>
             </ul>
             <p className="menu-label">

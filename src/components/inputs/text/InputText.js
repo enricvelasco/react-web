@@ -5,8 +5,9 @@ export class InputText extends Component{
     super(props)
     console.log("ENTRA A CONSTRUCTOR TEXT", props);
 
-    this.isRequired = this.props.required
-    this.inputTitle = this.props.inputTitle
+    this.idComp = props.id
+    this.isRequired = props.required
+    this.inputTitle = props.inputTitle
     this.errorState = false
 
     if(this.props.value != null){
@@ -48,7 +49,7 @@ export class InputText extends Component{
                               <p>{this.inputTitle}</p>
                             </li>
                             <li>
-                                <input className="input is-danger" type="text" onChange={this._textChanges} value={this.value}/>
+                                <input id={this.idComp} className="input is-danger" type="text" onChange={this._textChanges} value={this.value}/>
                             </li>
                           </ul>
                         </div>
@@ -60,7 +61,7 @@ export class InputText extends Component{
                               <p>{this.inputTitle}</p>
                             </li>
                             <li>
-                                <input className="input" type="text" onChange={this._textChanges} value={this.value}/>
+                                <input id={this.idComp} className="input" type="text" onChange={this._textChanges} value={this.value}/>
                             </li>
                           </ul>
                         </div>
@@ -71,5 +72,22 @@ export class InputText extends Component{
       {inputTextElement}
       </div>
     )
+  }
+
+  shouldComponentUpdate(nextProps, nextState){
+    console.log("SHOUD COMP UPDATE", nextProps,nextState)
+
+    this.idComp = nextProps.id
+    this.isRequired = nextProps.required
+    this.inputTitle = nextProps.inputTitle
+    this.errorState = false
+    if(nextProps.value == undefined){
+      this.value = ""
+    }else{
+      this.value = nextProps.value
+    }
+
+
+    return true
   }
 }

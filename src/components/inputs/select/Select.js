@@ -7,6 +7,9 @@ export class Select extends Component{
     super(props)
     this.isRequired = this.props.required
     this.errorState = false
+
+    this.arrRet = []
+    this.objResp = []
     this.state = {loading:true, objsToSelect:[]}
     if(this.props.value != null){
       this.value = this.props.value
@@ -23,24 +26,26 @@ export class Select extends Component{
     }
 
     this._cargarResultadosCombo()
+
   }
 
   _cargarResultadosCombo=()=>{
-    console.log("CARGA RESULTADOS COMBO");
-    var collection = db.collection(this.props.url);
-    if(this.props.filter == undefined){
-      this._consulta(collection)
-    }else{
-      var filter = this.props.filter;
-      var query = collection.where(filter[0], filter[1],filter[2]);
-      this._consulta(query)
-    }
+    console.log("CARGA RESULTADOS COMBO",this.props);
+      var collection = db.collection(this.props.url);
+      if(this.props.filter == undefined){
+        this._consulta(collection)
+      }else{
+        var filter = this.props.filter;
+        var query = collection.where(filter[0], filter[1],filter[2]);
+        this._consulta(query)
+      }
+
   }
 
   _consulta=(coll)=>{
     coll.get().then((querySnapshot) => {
-      var arrRet = []
-      var objResp = []
+      //var arrRet = []
+      //var objResp = []
       var cont = 0;
         querySnapshot.forEach((doc) =>{
           let resp = doc.data()
@@ -51,19 +56,19 @@ export class Select extends Component{
 
           if(this.props.value != null && this.props.value.id == obj.id){
             this.value = obj.id
-            arrRet.push(<option value={doc.id} selected>{obj.name}</option>)
+            this.arrRet.push(<option value={doc.id} selected>{obj.name}</option>)
           }else{
-            arrRet.push(<option value={doc.id}>{obj.name}</option>)
+            this.arrRet.push(<option value={doc.id}>{obj.name}</option>)
           }
 
           resp.id = obj.id
-          objResp.push(resp)
+          this.objResp.push(resp)
 
           cont ++;
         });
         this.setState({
-          camposCombo:arrRet,
-          objsToSelect:objResp,
+          camposCombo:this.arrRet,
+          objsToSelect:this.objResp,
           loading:false
         })
         console.log("RETORNA ARR",this.state);

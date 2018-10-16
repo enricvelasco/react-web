@@ -42,24 +42,29 @@ exports.createAssociationPublic = functions.firestore
 exports.updateAssociationPublic = functions.firestore
     .document('association/{associationId}')
     .onUpdate((change, context) => {
-      // Get an object representing the document
-      // e.g. {'name': 'Marie', 'age': 66}
       const db = admin.firestore();
-      const newValue = change.after.data();
-      db.collection("associationPublic").doc(tcontext.params.associationId).update(newValue)
-      .then(() => {
-          console.log("UPDATED OK");
+      var objPublic = {
+        code: change.after.data().code,
+        name: change.after.data().name
+      }
+      db.collection("associationPublic").doc(context.params.associationId).update(objPublic)
+      .then((ret) => {
+          console.log("UPDATED OK", ret);
       })
       .catch(function(error) {
           console.error("ERROR AL ACTUALIZAR", error);
       });
-      // ...or the previous value before this update
-      //const previousValue = change.before.data();
+});
 
-      // access a particular field as you would any JS property
-      //const name = newValue.name;
-
-      // perform desired operations ...
+exports.deleteAssociationPublic = functions.firestore
+    .document('association/{associationId}')
+    .onDelete((change, context) => {
+      const db = admin.firestore();
+      db.collection("associationPublic").doc(context.params.associationId).delete().then(() =>{
+          console.log("Document successfully deleted!");
+      }).catch(function(error) {
+          console.error("Error removing document: ", error);
+      });
 });
 
 /*_loadData(){

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
+//import './App.scss';
 import './App.css';
 import 'bulma/css/bulma.css'
 
@@ -40,11 +41,20 @@ class App extends Component {
   _loadFormWithUserParams=()=>{
     console.log("STATE PRINCIPAL", this.state);
     switch (this.state.userParams.idUserLevel) {
-      case "1":
+      case "H9poGCqWdlF9UdMZd3WE"://admin ROOT
         return(<AdminPage onUpdateAppState={this._updateAppState} appState={this.state}/>)
         break;
-      case "2":
+      case "nFELvYL5cYeuXwez9qys"://asociacion ADMIN
         return(<ClientPage/>)
+        break;
+      case "aGRHtQc98BazJeFpCiD9"://asociacion empleado
+          return(<ClientPage/>)
+        break;
+      case "DVNySnHN1mjDKKQ7srwq"://tienda admin
+          return(<ClientPage/>)
+        break;
+      case "4jnemon4i4qcIAWqGDnR"://tienda admin
+          return(<ClientPage/>)
         break;
 
     }

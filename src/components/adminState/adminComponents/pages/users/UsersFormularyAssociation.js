@@ -5,18 +5,21 @@ import {Radio} from '../../../../inputs/radio/Radio'
 import {Select} from '../../../../inputs/select/Select'
 import {Categories} from '../../../../inputs/grid/Categories'
 import {InputArrayImages} from '../../../../inputs/images/InputArrayImages'
+import {SubgroupList} from '../../../../inputs/grid/SubgroupList'
+import {LinkColumn} from '../../../../inputs/grid/componentsColumns/LinkColumn'
+import {Users} from "../users/Users"
 
 import firebase from 'firebase';
 import db from '../../../../../firebase'
 
 const sizeImage = {width:128, height:128}
-export class UserLevelsFormulary extends Component{
+export class UsersFormularyAssociation extends Component{
 
   constructor(props){
     super(props)
     this.state = {tabSelect:0, loading:true, objectToSave:{}, errorTree:{}};
 
-    console.log("UserLevelsFormulary FORMULARY !!!!! ", props);
+    console.log("UsersFormulary FORMULARY !!!!! ", props);
     if(props.idUrl != null){
       console.log("IS EDITION", props.idUrl);
       this._loadObjectParamsToEdit()
@@ -53,7 +56,8 @@ export class UserLevelsFormulary extends Component{
         </div>
         <div className="tabs">
           <ul>
-            <li className={this._isActive(0)} onClick={() => this._changeActiveTab(0)}><a>Datos Generales</a></li>
+            <li className={this._isActive(0)} onClick={() => this._changeActiveTab(0)}><a>Datos públicos</a></li>
+            {/*<li className={this._isActive(1)} onClick={() => this._changeActiveTab(1)}><a>Datos configuración</a></li>*/}
           </ul>
         </div>
         <article id={this.state.tabSelect} className="margin-block-inputs">
@@ -81,10 +85,6 @@ export class UserLevelsFormulary extends Component{
   }
 
   _respInput=(res, val, err)=>{
-    //this.props.onSave("hola")
-
-    //this._setError(res, err)
-
     console.log("ERROR TREEE -1", res, err);
     this.firstTime = false
     this.state.errorTree[res]=err
@@ -102,20 +102,49 @@ export class UserLevelsFormulary extends Component{
         <div>
           <InputText id="code" inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
           <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
-          <Select inputTitle="Tipo Usuario" resourceName="idUserTipo" required={true} url={"tipoUsuario"} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.idUserTipo}/>
-
-          <InputText id="observations" inputTitle="Observaciones" resourceName="observations" required={false} onResults={this._respInput} value={this.state.objectToSave.observations}/>
-
+          <Select inputTitle="Nivel Usuario" resourceName="idUserLevel" required={true} url={"usersLevels"} filter={["idUserTipo.id","==","qAyw8GvlIHVRK4mdhpwS"]} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.idUserLevel}/>
         </div>
       )
 
   }
+  _paramsSection1=()=>{
+    return(
+      <div>
+        <InputText id="domain2" inputTitle="Url Dominio" resourceName="domain" required={true} onResults={this._respInput} value={this.state.objectToSave.domain}/>
+      </div>
+    )
+  }
 
+  _moutColumns=()=>{
+    return( [
+      { key: 'codigoLink', name: 'Code', formatter: <LinkColumn nameLinkColumn="code" onResults={this._respuestaCampoLink}/>},
+      { key: 'name', name: 'Name'},
+      { key: 'idUserLevel', name: 'User level' }])
+  }
+
+  _loadArrayRadioButton=()=>{
+    var arr = []
+    for(var i=0;i<10;i++){
+      var obj = {
+        id:i,
+        code:"00"+i,
+        name:"element_"+i
+      }
+      arr.push(obj)
+    }
+    return arr
+  }
 
   _paramsTab=(select)=>{
     switch (select) {
       case 0:
         this.setState({paramsMount:this._paramsSection0()})
+      break;
+      case 1:
+        this.setState({paramsMount:this._paramsSection1()})
+      break;
+      case 2:
+        this.setState({paramsMount:this._paramsSection2()})
       break;
 
     }

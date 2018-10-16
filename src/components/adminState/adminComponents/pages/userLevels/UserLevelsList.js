@@ -15,14 +15,14 @@ export class UserLevelsList extends Component{
   }
 
   componentWillUpdate(props,state){
-    console.log("USER LIST-componentWillUpdate", props, state);
+    console.log("UserLevelsList LIST-componentWillUpdate", props, state);
     //this._loadData();
   }
 
   _moutColumns(){
     this.columns = [
-      { key: 'codigoLink', name: 'Code', formatter: <LinkColumn nameLinkColumn="code" onResults={this._respuestaCampoLink}/>},
-      { key: 'name', name: 'Name'}];
+      { key: 'codigoLink', name: 'Código', formatter: <LinkColumn nameLinkColumn="code" onResults={this._respuestaCampoLink}/>},
+      { key: 'name', name: 'Nombre'}];
   }
 
   _respuestaCampoLink=(e)=>{
@@ -40,7 +40,8 @@ export class UserLevelsList extends Component{
          this.props.onReturnNew()
         break;
     case "delete":
-        console.log("CLICK SOBRE DELETE");
+        console.log("CLICK SOBRE DELETE", this.rows);
+        this._deleteSelectedRows()
       break;
 
     }
@@ -67,6 +68,32 @@ export class UserLevelsList extends Component{
     });
   }
 
+  _selectedRowsManagement=(rowArr)=>{
+    rowArr.forEach((resp) =>{
+      this.rows.forEach((son) =>{
+        if(resp.id == son.id){
+          son.selected = resp.selected
+        }
+      })
+    })
+  }
+
+  _deleteSelectedRows=()=>{
+    this.setState({loading:true})
+    this.rows.forEach((son) =>{
+      if(son.selected){
+        //son.selected = resp.selected
+        db.collection(this.props.urlMapping).doc(son.id).delete().then(() =>{
+            console.log("Document successfully deleted!");
+        }).catch(function(error) {
+            console.error("Error removing document: ", error);
+        });
+      }
+    })
+
+    this._loadData()
+  }
+
   render(){
     return(
       <div>
@@ -78,7 +105,13 @@ export class UserLevelsList extends Component{
         {this.state.loading?
           <Loading/>
           :
-          <Grid columns={this.columns} rows={this.rows}/>
+          <Grid
+            columns={this.columns}
+            rows={this.rows}
+            selectableCell={false}
+            selectableRow={true}
+            onSelect={this._selectedRowsManagement}
+          />
         }
       </div>
     )
