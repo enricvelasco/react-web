@@ -3,6 +3,7 @@ import logo from './logo.svg';
 //import './App.scss';
 import './App.css';
 import 'bulma/css/bulma.css'
+import 'react-color-picker/index.css'
 
 
 //import 'react-bulma-notification/css/index.css';

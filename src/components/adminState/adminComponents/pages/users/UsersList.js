@@ -75,7 +75,7 @@ export class UsersList extends Component{
 		    });
         this._moutColumns()
         this.setState({loading:false})
-				console.log("RESULTADO", querySnapshot);
+				console.log("RESULTADO USERS", this.rows);
 		}).catch((err)=>{
       console.log(err);
     });
@@ -104,7 +104,7 @@ export class UsersList extends Component{
       }
     })
 
-    this._loadData()
+    this._loadCollection()
   }
 
   render(){

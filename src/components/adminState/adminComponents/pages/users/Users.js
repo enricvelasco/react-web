@@ -81,7 +81,7 @@ export class Users extends Component{
       case "new":
           var formulary
           if(this.props.personalizedComponentFormulary == "association"){
-            formulary=<UsersFormularyAssociation onCancel={this._onCancel} onSave={this._onSave}/>
+            formulary=<UsersFormularyAssociation onCancel={this._onCancel} onSave={this._onSave} idAssociation={this.props.associationId}/>
           }else{
             formulary=<UsersFormulary onCancel={this._onCancel} onSave={this._onSave}/>
           }
@@ -90,7 +90,7 @@ export class Users extends Component{
       case "edit":
           var formulary
           if(this.props.personalizedComponentFormulary == "association"){
-            formulary = <UsersFormularyAssociation onCancel={this._onCancel} onSave={this._onSave}/>
+            formulary = <UsersFormularyAssociation onCancel={this._onCancel} onSave={this._onSave} idAssociation={this.props.associationId}/>
           }else{
             formulary =< UsersFormularyAssociation onCancel={this._onCancel} onSave={this._onSave}/>
           }

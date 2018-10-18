@@ -37,6 +37,8 @@
     "react": "^16.4.2",
     "react-avatar-editor": "^11.0.4",
     "react-bulma-notification": "^1.1.0",
+    "react-color": "^2.14.1",
+    "react-color-picker": "^4.0.2",
     "react-data-grid": "^4.0.8",
     "react-dev-utils": "^5.0.2",
     "react-dom": "^16.4.2",

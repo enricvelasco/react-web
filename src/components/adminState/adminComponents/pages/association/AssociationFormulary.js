@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {InputText} from '../../../../inputs/text/InputText'
+import {InputColorPicker} from '../../../../inputs/colorPicker/InputColorPicker'
 import {Checkbox} from '../../../../inputs/checkbox/Checkbox'
 import {Radio} from '../../../../inputs/radio/Radio'
 import {Select} from '../../../../inputs/select/Select'
@@ -50,6 +51,24 @@ export class AssociationFormulary extends Component{
       }
     }
 
+    var tabList
+    if(this.props.idUrl == null){//estado nuevo
+      tabList = (
+        <ul>
+          <li className={this._isActive(0)} onClick={() => this._changeActiveTab(0)}><a>Datos públicos</a></li>
+          <li className={this._isActive(1)} onClick={() => this._changeActiveTab(1)}><a>Datos configuración</a></li>
+        </ul>
+      )
+    }else{//edit
+      tabList = (
+        <ul>
+          <li className={this._isActive(0)} onClick={() => this._changeActiveTab(0)}><a>Datos públicos</a></li>
+          <li className={this._isActive(1)} onClick={() => this._changeActiveTab(1)}><a>Datos configuración</a></li>
+          <li className={this._isActive(1)} onClick={() => this._changeActiveTab(2)}><a>Usuarios acceso</a></li>
+        </ul>
+      )
+    }
+
 
     return(
       <div>
@@ -58,11 +77,9 @@ export class AssociationFormulary extends Component{
           <p className="subtitle">{this.props.subtitle == null? "" : this.props.subtitle}</p>
         </div>
         <div className="tabs">
-          <ul>
-            <li className={this._isActive(0)} onClick={() => this._changeActiveTab(0)}><a>Datos públicos</a></li>
-            <li className={this._isActive(1)} onClick={() => this._changeActiveTab(1)}><a>Datos configuración</a></li>
-            <li className={this._isActive(1)} onClick={() => this._changeActiveTab(2)}><a>Usuarios acceso</a></li>
-          </ul>
+
+            {tabList}
+
         </div>
         <article id={this.state.tabSelect} className="margin-block-inputs">
           {params}
@@ -106,6 +123,7 @@ export class AssociationFormulary extends Component{
         <div>
           <InputText id="code" inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
           <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
+          <InputArrayImages id="logo" inputTitle="Logo" resourceName="logo" sizeImage={sizeImage}  onResults={this._respInput} value={this.state.objectToSave.logo}/>
         </div>
       )
 
@@ -114,13 +132,14 @@ export class AssociationFormulary extends Component{
     return(
       <div>
         <InputText id="domain2" inputTitle="Url Dominio" resourceName="domain" required={true} onResults={this._respInput} value={this.state.objectToSave.domain}/>
+        <InputColorPicker id="primaryColor" inputTitle="Color principal" resourceName="primaryColor" required={true} onResults={this._respInput} value={this.state.objectToSave.primaryColor}/>
       </div>
     )
   }
   _paramsSection2=()=>{
     return(
         //<SubgroupList inputTitle="Usuarios por asociación" url="userParams" columns={this._moutColumns()} filter={["idAssociation", "==", this.props.idUrl]}/>
-        <Users urlMapping="userParams" initialState="list" filter={["idAssociation.id", "==", this.props.idUrl]} personalizedComponentFormulary="association" isPopUpFromulary={true}/>
+        <Users urlMapping="userParams" initialState="list" filter={["idAssociation", "==", this.props.idUrl]} personalizedComponentFormulary="association" associationId={this.props.idUrl} isPopUpFromulary={true}/>
     )
   }
 
@@ -179,7 +198,7 @@ export class AssociationFormulary extends Component{
     this.state.loading=true
     console.log("ENTRA A CARGAR EDICION");
     db.collection(this.props.urlMapping).doc(this.props.idUrl).get().then((doc) => {
-				console.log("RESULTADO", doc.data());
+				console.log("RESULTADO ASOC", doc.data());
         this.setState({loading:false, objectToSave:doc.data()})
 		}).catch((err)=>{
       console.log(err);

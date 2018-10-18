@@ -27,6 +27,7 @@ export class UsersFormularyAssociation extends Component{
       //default object
       this.firstTime = true
       this.state.objectToSave={
+        idAssociation:props.idAssociation
       }
 
       this.state.errorTree={
@@ -102,6 +103,8 @@ export class UsersFormularyAssociation extends Component{
         <div>
           <InputText id="code" inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
           <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
+          <InputText id="email" inputTitle="E-mail" resourceName="email" required={true} onResults={this._respInput} value={this.state.objectToSave.email}/>
+          
           <Select inputTitle="Nivel Usuario" resourceName="idUserLevel" required={true} url={"usersLevels"} filter={["idUserTipo.id","==","qAyw8GvlIHVRK4mdhpwS"]} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.idUserLevel}/>
         </div>
       )

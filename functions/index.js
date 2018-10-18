@@ -24,7 +24,8 @@ exports.createAssociationPublic = functions.firestore
         var objPublic = {
           id: doc.id,
           code: doc.data().code,
-          name: doc.data().name
+          name: doc.data().name,
+          logo: change.after.data().logo
         }
         db.collection("associationPublic").doc(context.params.associationId).set(objPublic)
         .then(() => {
@@ -45,7 +46,8 @@ exports.updateAssociationPublic = functions.firestore
       const db = admin.firestore();
       var objPublic = {
         code: change.after.data().code,
-        name: change.after.data().name
+        name: change.after.data().name,
+        logo: change.after.data().logo
       }
       db.collection("associationPublic").doc(context.params.associationId).update(objPublic)
       .then((ret) => {
