@@ -14,6 +14,142 @@ const database = admin.database();
 //  response.send("Hello from Firebase!");
 // });
 
+
+exports.createStorePublic = functions.firestore
+    .document('stores/{storeId}')//params: { associationId: 'bgQF9MYa1jmhsU7pv62l' }
+    .onCreate((snap, context) => {
+      const db = admin.firestore();
+      console.log("ENTRADA DATOS", context.params.storeId);
+      /*console.log("ENTRADA DATOS 1", context.params);
+      console.log("ENTRADA DATOS 2", snap.params);*/
+
+      db.collection("stores").doc(context.params.storeId).get().then((docStore) => {
+
+        //docStore.data().id = docStore.id //le asigna el id al objeto
+        console.log("TIENDA ENCONTRADA", docStore.data());
+        //crear la tienda publica
+        console.log("PROCEDE A CREAR TIENDA PÚBLICA");
+        db.collection("storesPublic").doc(context.params.storeId).set({
+          id:docStore.id,
+          code:docStore.data().code,
+          name:docStore.data().name,
+          logo:docStore.data().logo
+        })
+        .then(() => {
+            console.log("TIENDA PUBLICA CREADA");
+            console.log("PROCEDE A ASIGNAR TIENDA A LA ASOCIACIÓN CORRESPONDIENTE", docStore.data());
+            db.collection("association").doc(docStore.data().association.id).get().then((docAssoc) => {
+              var asoc = docAssoc.data()
+              asoc.id = docAssoc.id
+              let storeWithoutAsoc = docStore.data()
+              storeWithoutAsoc.id = docStore.id
+              delete storeWithoutAsoc.association
+              asoc.stores.push(storeWithoutAsoc)
+
+              console.log("ANTES DE ACTUALIZAR LA ASOC", asoc);
+              console.log("ANTES DE ACTUALIZAR LA ASOC --- STORE", storeWithoutAsoc);
+              db.collection("association").doc(asoc.id).update(asoc)
+              .then((ret) => {
+                  console.log("ASOCIACION ACTUALIZADA OK", ret);
+              })
+              .catch(function(error) {
+                  console.error("ERROR AL ACTUALIZAR ASOCIACION", error);
+              });
+            })
+        })
+        .catch(function(error) {
+            console.error("ERROR AL CREAR TIENDA PUBLICA", error);
+        });
+        //asignar la tienda a la asociacion correspondiente
+
+      })
+    }
+  );
+
+exports.updateStoresPublic = functions.firestore
+    .document('stores/{storeId}')
+    .onUpdate((change, context) => {
+      const db = admin.firestore();
+      var objPublic = {
+        code: change.after.data().code,
+        name: change.after.data().name,
+        logo: change.after.data().logo
+      }
+      db.collection("storesPublic").doc(context.params.storeId).update(objPublic)
+      .then((ret) => {
+          console.log("UPDATED OK", ret);
+          db.collection("association").doc(change.after.data().association.id).get().then((docAssoc) => {
+            var asoc = docAssoc.data()
+            asoc.id = docAssoc.id
+            let storeWithoutAsoc = change.after.data()
+            storeWithoutAsoc.id = context.params.storeId
+            delete storeWithoutAsoc.association
+            //asoc.stores.push(storeWithoutAsoc)
+            var arrStores = []
+            asoc.stores.forEach((val)=>{
+              if(val.id === storeWithoutAsoc.id){
+                arrStores.push(storeWithoutAsoc)
+              }else{
+                arrStores.push(val)
+              }
+            })
+            asoc.stores = arrStores
+
+            console.log("ANTES DE ACTUALIZAR LA ASOC", asoc);
+            console.log("ANTES DE ACTUALIZAR LA ASOC --- STORE", storeWithoutAsoc);
+            db.collection("association").doc(asoc.id).update(asoc)
+            .then((ret) => {
+                console.log("ASOCIACION ACTUALIZADA OK", ret);
+            })
+            .catch(function(error) {
+                console.error("ERROR AL ACTUALIZAR ASOCIACION", error);
+            });
+          })
+
+      })
+      .catch(function(error) {
+          console.error("ERROR AL ACTUALIZAR", error);
+      });
+});
+
+exports.deleteStoresPublic = functions.firestore
+    .document('stores/{storeId}')
+    .onDelete((snap, context) => {
+      const db = admin.firestore();
+      console.log("TIENDA ELIMINADA", snap.data());
+      db.collection("storesPublic").doc(context.params.storeId).delete().then(() =>{
+          console.log("DELETED OK");
+          db.collection("association").doc(snap.data().association.id).get().then((docAssoc) => {
+            var asoc = docAssoc.data()
+            asoc.id = docAssoc.id
+            let storeWithoutAsoc = snap.data()
+            storeWithoutAsoc.id = context.params.storeId
+            delete storeWithoutAsoc.association
+            //asoc.stores.push(storeWithoutAsoc)
+            var arrStores = []
+            asoc.stores.forEach((val)=>{
+              if(val.id !== storeWithoutAsoc.id){
+                arrStores.push(val)
+              }
+            })
+            asoc.stores = arrStores
+
+            console.log("ANTES DE ACTUALIZAR LA ASOC", asoc);
+            console.log("ANTES DE ACTUALIZAR LA ASOC --- STORE", storeWithoutAsoc);
+            db.collection("association").doc(asoc.id).update(asoc)
+            .then((ret) => {
+                console.log("ASOCIACION ACTUALIZADA OK", ret);
+            })
+            .catch(function(error) {
+                console.error("ERROR AL ACTUALIZAR ASOCIACION", error);
+            });
+          })
+
+      }).catch(function(error) {
+          console.error("Error removing document: ", error);
+      });
+});
+
 exports.createAssociationPublic = functions.firestore
     .document('association/{associationId}')//params: { associationId: 'bgQF9MYa1jmhsU7pv62l' }
     .onCreate((snap, context) => {
@@ -25,7 +161,7 @@ exports.createAssociationPublic = functions.firestore
           id: doc.id,
           code: doc.data().code,
           name: doc.data().name,
-          logo: change.after.data().logo
+          logo: doc.data().logo
         }
         db.collection("associationPublic").doc(context.params.associationId).set(objPublic)
         .then(() => {
@@ -68,54 +204,3 @@ exports.deleteAssociationPublic = functions.firestore
           console.error("Error removing document: ", error);
       });
 });
-
-/*_loadData(){
-  //this.setState({loading:true})
-  this.rows = []
-  db.collection(this.props.urlMapping).get().then((querySnapshot) => {
-      querySnapshot.forEach((doc) =>{
-          // doc.data() is never undefined for query doc snapshots
-          let registro = {}
-
-          registro = doc.data()
-          registro.id = doc.id
-          registro.codigoLink = {id:registro.id, code:registro.code}
-          this.rows.push(registro)
-      });
-      this._moutColumns()
-      this.setState({loading:false})
-      console.log("RESULTADO", querySnapshot);
-  }).catch((err)=>{
-    console.log(err);
-  });
-}*/
-
-/*exports.createUserParams = functions.auth.user().onCreate(event =>{
-  var user = event.data;
-  var idUser = user.uid
-
-  db.collection("userParams").doc(idUser).set({
-      code:null,
-      idUserLevel:null,
-      name:"no name",
-      urlReference: null
-  })
-  .then(function() {
-      console.log("Document successfully written!");
-  })
-  .catch(function(error) {
-      console.error("Error writing document: ", error);
-  });
-});*/
-
-/*exports.returnUserParams = functions.https.onCall((recurso) => {
-  console.log("ENTRA EN FUNCION", recurso);
-  var bd = functions.database.ref('cities');
-  bd.add({
-    name: 'Tokyo',
-    country: 'Japan'
-  }).then(ref => {
-    console.log('Added document with ID: ', ref.id);
-    return "HA LLAMADO FUNCION"
-  });
-});*/

@@ -11,7 +11,7 @@ export class Select extends Component{
     this.arrRet = []
     this.objResp = []
     this.state = {loading:true, objsToSelect:[]}
-    if(this.props.value != null){
+    /*if(this.props.value != null){
       this.value = this.props.value
       var retErr
       if(this.isRequired && (this.value==null || this.value=="")){
@@ -23,6 +23,20 @@ export class Select extends Component{
     }else{
       this.value = 0
       this.props.onResults(this.props.resourceName, null, true)
+    }*/
+
+    if(this.props.value != null){
+      this.value = this.props.value
+      var retErr
+      if(this.isRequired && (this.value==null || this.value=="")){
+        retErr = true
+      }else{
+        retErr = false
+      }
+      this.props.onResults(this.props.resourceName, this.value, retErr)
+    }else{
+      this.value = 0
+      //this.props.onResults(this.props.resourceName, null, this.isRequired)
     }
 
     this._cargarResultadosCombo()

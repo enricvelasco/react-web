@@ -4,9 +4,12 @@ import {NavBarAdmin} from "../components/NavBarAdmin"
 import {RecordsList} from "./RecordsList"
 import {Users} from "./users/Users"
 import {UserLevels} from "./userLevels/UserLevels"
-import {ProductCategories} from "./products/productCategories/ProductCategories"
+import {ProductCategories} from "./productCategories/ProductCategories"
+import {Product} from "./products/Product"
 import {Initial} from "./initial/Initial"
 import {Association} from "./association/Association"
+import {Store} from "./stores/Store"
+import {StoreCategories} from "./storeCategories/StoreCategories"
 
 export class AdminPage extends Component {
   constructor(){
@@ -29,13 +32,24 @@ export class AdminPage extends Component {
       case "usersLevels":
           this.setState({content:(<UserLevels urlMapping="usersLevels" initialState="list"/>)})
       break;
+      case "products":
+          this.setState({content:(<Product urlMapping="products" initialState="list"/>)})
+      break;
       case "productCategories":
           this.setState({content:(<ProductCategories urlMapping="productCategories" initialState="list"/>)})
       break;
       case "association":
           this.setState({content:(<Association urlMapping="association" initialState="list"/>)})
       break;
+      case "stores":
+          this.setState({content:(<Store urlMapping="stores" initialState="list"/>)})
+      break;
+      case "storeCategories":
+          this.setState({content:(<StoreCategories urlMapping="storeCategories" initialState="list"/>)})
+      break;
 
+      default:
+      break;
     }
   }
 

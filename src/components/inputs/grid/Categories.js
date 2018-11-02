@@ -33,6 +33,9 @@ export class Categories extends Component{
     db.collection(this.props.url).get().then((querySnapshot) => {
       console.log("RESULTADO-*****", querySnapshot);
 		    querySnapshot.forEach((doc) =>{
+          console.log("RESULTADO FOR-*****", doc.data());
+          console.log("RESULTADO FOR- 1 *****", doc);
+          console.log("RESULTADO FOR- 2 *****", doc.id);
 		        // doc.data() is never undefined for query doc snapshots
 						let registro = {}
 
@@ -54,6 +57,7 @@ export class Categories extends Component{
   _mountFathersAndSons=()=>{
     //var arrFathers = []
     //var arrSons = []
+    console.log("ENTRA MONTAR PADRES");
     this.rows.forEach((doc) =>{
       if(doc.isFather != undefined && doc.isFather){
         this.arrFathers.push(doc)
@@ -88,7 +92,7 @@ export class Categories extends Component{
             <Grid columns={this._loadColumns()}
               rows={this._getRows(doc)}
               minHeight={200}
-              minWidth={400}
+              minWidth={600}
               selectableCell={false}
               selectableRow={true}
               onSelect={this._selectedRowsManagement}/>

@@ -26,7 +26,7 @@ export class LateralMenu extends Component{
             <ul className="menu-list">
               <li onClick={((e) => this._elementClicked(e, "association"))}><Link to='/association'>Asociaciones</Link></li>
               <ul>
-                <li onClick={((e) => this._elementClicked(e, "associationShops"))}><Link to='/associationShops'>Tiendas de Asociaciones</Link></li>
+
               </ul>
               <li onClick={((e) => this._elementClicked(e, "shopsWithoutAsoc"))}><Link to='/shopsWithoutAsoc'>Tiendas sin asociacion</Link></li>
             </ul>
@@ -42,12 +42,15 @@ export class LateralMenu extends Component{
             </p>
             <ul className="menu-list">
               <li onClick={((e) => this._elementClicked(e, "productCategories"))}><Link to='/productCategories'>Categorías de Productos</Link></li>
+              <li onClick={((e) => this._elementClicked(e, "products"))}><Link to='/products'>Productos</Link></li>
             </ul>
             <p className="menu-label">
               Tiendas
             </p>
             <ul className="menu-list">
-              <li onClick={((e) => this._elementClicked(e, "shopTypes"))}><Link to='/shopTypes'>Categorías de Tiendas</Link></li>
+              <li onClick={((e) => this._elementClicked(e, "storeCategories"))}><Link to='/storeCategories'>Categorías de Tiendas</Link></li>
+              <li onClick={((e) => this._elementClicked(e, "stores"))}><Link to='/stores'>Tiendas de Asociaciones</Link></li>
+              <li onClick={((e) => this._elementClicked(e, "storesWithoutAsoc"))}><Link to='/storesWithoutAsoc'>Tiendas sin asociacion</Link></li>
             </ul>
             </aside>
           </div>

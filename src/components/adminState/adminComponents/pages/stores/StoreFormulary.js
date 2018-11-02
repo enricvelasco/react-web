@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {InputText} from '../../../../inputs/text/InputText'
-import {InputColorPicker} from '../../../../inputs/colorPicker/InputColorPicker'
 import {Checkbox} from '../../../../inputs/checkbox/Checkbox'
 import {Radio} from '../../../../inputs/radio/Radio'
 import {Select} from '../../../../inputs/select/Select'
@@ -9,19 +8,19 @@ import {InputArrayImages} from '../../../../inputs/images/InputArrayImages'
 import {SubgroupList} from '../../../../inputs/grid/SubgroupList'
 import {LinkColumn} from '../../../../inputs/grid/componentsColumns/LinkColumn'
 import {Users} from "../users/Users"
-import {UsersFormularyAssociation} from "../users/UsersFormularyAssociation"
+import {Direction} from '../../../../inputs/direction/Direction'
 
 import firebase from 'firebase';
 import db from '../../../../../firebase'
 
 const sizeImage = {width:128, height:128}
-export class AssociationFormulary extends Component{
+export class StoreFormulary extends Component{
 
   constructor(props){
     super(props)
     this.state = {tabSelect:0, loading:true, objectToSave:{}, errorTree:{}};
 
-    console.log("AssociationFormulary FORMULARY !!!!! ", props);
+    console.log("StoreFormulary FORMULARY !!!!! ", props);
     if(props.idUrl != null){
       console.log("IS EDITION", props.idUrl);
       this._loadObjectParamsToEdit()
@@ -29,8 +28,8 @@ export class AssociationFormulary extends Component{
       //default object
       this.firstTime = true
       this.state.objectToSave={
-        stores:[],
-        logo:[]
+        logo:[],
+        storeCategories:[]
       }
 
       this.state.errorTree={
@@ -44,31 +43,15 @@ export class AssociationFormulary extends Component{
     if(this.state.loading){
       params = <div>loading...</div>
     }else{
-      if(this.state.tabSelect==0){
+      if(this.state.tabSelect===0){
         params = this._paramsSection0()
-      }else if(this.state.tabSelect==1){
+      }else if(this.state.tabSelect===1){
         params = this._paramsSection1()
-      }else if(this.state.tabSelect==2){
+      }else if(this.state.tabSelect===2){
         params = this._paramsSection2()
+      }else if(this.state.tabSelect===3){
+        params = this._paramsSection3()
       }
-    }
-
-    var tabList
-    if(this.props.idUrl == null){//estado nuevo
-      tabList = (
-        <ul>
-          <li className={this._isActive(0)} onClick={() => this._changeActiveTab(0)}><a>Datos públicos</a></li>
-          <li className={this._isActive(1)} onClick={() => this._changeActiveTab(1)}><a>Datos configuración</a></li>
-        </ul>
-      )
-    }else{//edit
-      tabList = (
-        <ul>
-          <li className={this._isActive(0)} onClick={() => this._changeActiveTab(0)}><a>Datos públicos</a></li>
-          <li className={this._isActive(1)} onClick={() => this._changeActiveTab(1)}><a>Datos configuración</a></li>
-          <li className={this._isActive(1)} onClick={() => this._changeActiveTab(2)}><a>Usuarios acceso</a></li>
-        </ul>
-      )
     }
 
 
@@ -79,9 +62,12 @@ export class AssociationFormulary extends Component{
           <p className="subtitle">{this.props.subtitle == null? "" : this.props.subtitle}</p>
         </div>
         <div className="tabs">
-
-            {tabList}
-
+          <ul>
+            <li className={this._isActive(0)} onClick={() => this._changeActiveTab(0)}><a>Datos públicos</a></li>
+            <li className={this._isActive(1)} onClick={() => this._changeActiveTab(1)}><a>Datos configuración</a></li>
+            <li className={this._isActive(2)} onClick={() => this._changeActiveTab(2)}><a>Dirección</a></li>
+            <li className={this._isActive(3)} onClick={() => this._changeActiveTab(3)}><a>Categorías</a></li>
+          </ul>
         </div>
         <article id={this.state.tabSelect} className="margin-block-inputs">
           {params}
@@ -125,6 +111,7 @@ export class AssociationFormulary extends Component{
         <div>
           <InputText id="code" inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
           <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
+          <Select inputTitle="Asociacón" resourceName="association" required={true} url={"association"} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.association}/>
           <InputArrayImages id="logo" inputTitle="Logo" resourceName="logo" sizeImage={sizeImage}  onResults={this._respInput} value={this.state.objectToSave.logo}/>
         </div>
       )
@@ -134,22 +121,24 @@ export class AssociationFormulary extends Component{
     return(
       <div>
         <InputText id="domain2" inputTitle="Url Dominio" resourceName="domain" required={true} onResults={this._respInput} value={this.state.objectToSave.domain}/>
-        <InputColorPicker id="primaryColor" inputTitle="Color principal" resourceName="primaryColor" required={true} onResults={this._respInput} value={this.state.objectToSave.primaryColor}/>
       </div>
     )
   }
+
   _paramsSection2=()=>{
     return(
-        //<SubgroupList inputTitle="Usuarios por asociación" url="userParams" columns={this._moutColumns()} filter={["idAssociation", "==", this.props.idUrl]}/>
-        <Users urlMapping="userParams" initialState="list" filter={["idAssociation", "==", this.props.idUrl]} personalizedComponentFormulary="association" associationId={this.props.idUrl} isPopUpFromulary={true}/>
+      <div>
+        <Direction id="direction" resourceName="direction" onResults={this._respInput} value={this.state.objectToSave.direction}/>
+      </div>
     )
   }
 
-  _moutColumns=()=>{
-    return( [
-      { key: 'codigoLink', name: 'Code', formatter: <LinkColumn nameLinkColumn="code" onResults={this._respuestaCampoLink}/>},
-      { key: 'name', name: 'Name'},
-      { key: 'idUserLevel', name: 'User level' }])
+  _paramsSection3=()=>{
+    return(
+      <div>
+      <Categories inputTitle="Categorías de Tiendas" resourceName="storeCategories" showFields={["code", "name"]} url={"storeCategories"} onResults={this._respInput} value={this.state.objectToSave.storeCategories}/>
+      </div>
+    )
   }
 
   _loadArrayRadioButton=()=>{
@@ -176,6 +165,8 @@ export class AssociationFormulary extends Component{
       case 2:
         this.setState({paramsMount:this._paramsSection2()})
       break;
+      default:
+      break;
 
     }
   }
@@ -190,7 +181,7 @@ export class AssociationFormulary extends Component{
 	_isActive = (select) =>{
 		console.log("IS ACTIVE", select);
 		let classRet=""
-		if(this.state.tabSelect == select){
+		if(this.state.tabSelect === select){
 			classRet = "is-active"
 		}
 		return classRet
@@ -200,7 +191,7 @@ export class AssociationFormulary extends Component{
     this.state.loading=true
     console.log("ENTRA A CARGAR EDICION");
     db.collection(this.props.urlMapping).doc(this.props.idUrl).get().then((doc) => {
-				console.log("RESULTADO ASOC", doc.data());
+				console.log("RESULTADO", doc.data());
         this.setState({loading:false, objectToSave:doc.data()})
 		}).catch((err)=>{
       console.log(err);

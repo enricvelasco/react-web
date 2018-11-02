@@ -17,8 +17,13 @@ service cloud.firestore {
       allow read, write: if request.auth.uid != null;
     }
   	match /association/{doc} {
-      allow write: if request.auth.uid != null;
-      allow read;
+      allow read, write: if request.auth.uid != null;
+    }
+    match /stores/{doc} {
+      allow read, write: if request.auth.uid != null;
+    }
+    match /storeCategories/{doc} {
+      allow read, write: if request.auth.uid != null;
     }
     match /initial/{doc} {
       allow read, write: if request.auth.uid != null;
@@ -26,5 +31,9 @@ service cloud.firestore {
     match /productCategories/{doc} {
       allow read, write: if request.auth.uid != null;
     }
+    match /products/{doc} {
+      allow read, write: if request.auth.uid != null;
+    }
+
   }
 }
