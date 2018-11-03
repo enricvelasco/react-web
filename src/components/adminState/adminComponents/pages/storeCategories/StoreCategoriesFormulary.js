@@ -99,9 +99,10 @@ export class StoreCategoriesFormulary extends Component{
   _paramsSection0=()=>{
       return(
         <div>
+          <Select inputTitle="Categoría Padre" resourceName="fatherCategory" required={false} url={"storeCategories"} showFields={["code", "name"]} onResults={this._respInput} filter={["isFather","==",true]} value={this.state.objectToSave.fatherCategory}/>
           <InputText id="code" inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
           <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
-          <Select inputTitle="Categoría Padre" resourceName="fatherCategory" required={false} url={"storeCategories"} showFields={["code", "name"]} onResults={this._respInput} filter={["isFather","==",true]} value={this.state.objectToSave.fatherCategory}/>
+
           <InputText id="observations" inputTitle="Observaciones" resourceName="observations" required={false} onResults={this._respInput} value={this.state.objectToSave.observations}/>
         </div>
       )

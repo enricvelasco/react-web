@@ -10,11 +10,13 @@ import {SubgroupList} from '../../../../inputs/grid/SubgroupList'
 import {LinkColumn} from '../../../../inputs/grid/componentsColumns/LinkColumn'
 import {Users} from "../users/Users"
 import {UsersFormularyAssociation} from "../users/UsersFormularyAssociation"
+import {Direction} from '../../../../inputs/direction/Direction'
 
 import firebase from 'firebase';
 import db from '../../../../../firebase'
 
-const sizeImage = {width:128, height:128}
+const sizeImage = {width:400, height:400}
+const sizeImageBig = {width:1024, height:280}
 export class AssociationFormulary extends Component{
 
   constructor(props){
@@ -53,8 +55,12 @@ export class AssociationFormulary extends Component{
       }
     }
 
-    var tabList
-    if(this.props.idUrl == null){//estado nuevo
+    var tabList = ( <ul>
+                      <li className={this._isActive(0)} onClick={() => this._changeActiveTab(0)}><a>Datos públicos</a></li>
+                      <li className={this._isActive(1)} onClick={() => this._changeActiveTab(1)}><a>Datos configuración</a></li>
+                      <li className={this._isActive(1)} onClick={() => this._changeActiveTab(2)}><a>Datos Localización</a></li>
+                    </ul>)
+    /*if(this.props.idUrl == null){//estado nuevo
       tabList = (
         <ul>
           <li className={this._isActive(0)} onClick={() => this._changeActiveTab(0)}><a>Datos públicos</a></li>
@@ -69,7 +75,7 @@ export class AssociationFormulary extends Component{
           <li className={this._isActive(1)} onClick={() => this._changeActiveTab(2)}><a>Usuarios acceso</a></li>
         </ul>
       )
-    }
+    }*/
 
 
     return(
@@ -125,7 +131,6 @@ export class AssociationFormulary extends Component{
         <div>
           <InputText id="code" inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
           <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
-          <InputArrayImages id="logo" inputTitle="Logo" resourceName="logo" sizeImage={sizeImage}  onResults={this._respInput} value={this.state.objectToSave.logo}/>
         </div>
       )
 
@@ -134,16 +139,29 @@ export class AssociationFormulary extends Component{
     return(
       <div>
         <InputText id="domain2" inputTitle="Url Dominio" resourceName="domain" required={true} onResults={this._respInput} value={this.state.objectToSave.domain}/>
-        <InputColorPicker id="primaryColor" inputTitle="Color principal" resourceName="primaryColor" required={true} onResults={this._respInput} value={this.state.objectToSave.primaryColor}/>
+        <InputColorPicker id="primaryColor" inputTitle="Color principal" resourceName="primaryColor" required={false} onResults={this._respInput} value={this.state.objectToSave.primaryColor}/>
+        <InputColorPicker id="backgroundColor" inputTitle="Color Fondo" resourceName="backgroundColor" required={false} onResults={this._respInput} value={this.state.objectToSave.backgroundColor}/>
+        <InputArrayImages id="logo" inputTitle="Logo" resourceName="logo" sizeImage={sizeImage}  onResults={this._respInput} value={this.state.objectToSave.logo}/>
+        <InputArrayImages id="mainLogo" inputTitle="Imagen Principal" resourceName="mainLogo" sizeImage={sizeImageBig}  onResults={this._respInput} value={this.state.objectToSave.mainLogo}/>
       </div>
     )
   }
+
   _paramsSection2=()=>{
+    return(
+      <div>
+        <InputText id="phoneNumber" inputTitle="Telefono" resourceName="phoneNumber" required={true} onResults={this._respInput} value={this.state.objectToSave.phoneNumber}/>
+        <Direction id="direction" resourceName="direction" onResults={this._respInput} value={this.state.objectToSave.direction}/>
+      </div>
+    )
+  }
+
+  /*_paramsSection2=()=>{
     return(
         //<SubgroupList inputTitle="Usuarios por asociación" url="userParams" columns={this._moutColumns()} filter={["idAssociation", "==", this.props.idUrl]}/>
         <Users urlMapping="userParams" initialState="list" filter={["idAssociation", "==", this.props.idUrl]} personalizedComponentFormulary="association" associationId={this.props.idUrl} isPopUpFromulary={true}/>
     )
-  }
+  }*/
 
   _moutColumns=()=>{
     return( [

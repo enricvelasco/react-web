@@ -14,7 +14,7 @@ const database = admin.database();
 //  response.send("Hello from Firebase!");
 // });
 
-
+//TIENDAS***************************************
 exports.createStorePublic = functions.firestore
     .document('stores/{storeId}')//params: { associationId: 'bgQF9MYa1jmhsU7pv62l' }
     .onCreate((snap, context) => {
@@ -84,7 +84,6 @@ exports.updateStoresPublic = functions.firestore
             let storeWithoutAsoc = change.after.data()
             storeWithoutAsoc.id = context.params.storeId
             delete storeWithoutAsoc.association
-            //asoc.stores.push(storeWithoutAsoc)
             var arrStores = []
             asoc.stores.forEach((val)=>{
               if(val.id === storeWithoutAsoc.id){
@@ -94,9 +93,6 @@ exports.updateStoresPublic = functions.firestore
               }
             })
             asoc.stores = arrStores
-
-            console.log("ANTES DE ACTUALIZAR LA ASOC", asoc);
-            console.log("ANTES DE ACTUALIZAR LA ASOC --- STORE", storeWithoutAsoc);
             db.collection("association").doc(asoc.id).update(asoc)
             .then((ret) => {
                 console.log("ASOCIACION ACTUALIZADA OK", ret);
@@ -105,6 +101,20 @@ exports.updateStoresPublic = functions.firestore
                 console.error("ERROR AL ACTUALIZAR ASOCIACION", error);
             });
           })
+          /*db.collection("products").doc(change.after.data().store.id).get().then((docProd) => {
+            var prod = docProd.data()
+            prod.id = docProd.id
+            let storeWithoutAsoc = change.after.data()
+            storeWithoutAsoc.id = context.params.storeId
+            prod.store = storeWithoutAsoc
+            db.collection("association").doc(prod.id).update(prod)
+            .then((ret) => {
+                console.log("ASOCIACION ACTUALIZADA OK", ret);
+            })
+            .catch(function(error) {
+                console.error("ERROR AL ACTUALIZAR ASOCIACION", error);
+            });
+          })*/
 
       })
       .catch(function(error) {
@@ -149,7 +159,9 @@ exports.deleteStoresPublic = functions.firestore
           console.error("Error removing document: ", error);
       });
 });
+//FIN TIENDAS***************************************
 
+//ASOCIACIONES***************************************
 exports.createAssociationPublic = functions.firestore
     .document('association/{associationId}')//params: { associationId: 'bgQF9MYa1jmhsU7pv62l' }
     .onCreate((snap, context) => {
@@ -204,3 +216,18 @@ exports.deleteAssociationPublic = functions.firestore
           console.error("Error removing document: ", error);
       });
 });
+//FIN ASOCIACIONES***************************************
+
+//USERS*******************************************
+exports.createNewUserWithParams = functions.firestore
+.document('userParams/{userId}')//params: { associationId: 'bgQF9MYa1jmhsU7pv62l' }
+.onCreate((snap, context) => {
+  console.log("ENTRADA DATOS 1", context.params);
+  console.log("ENTRADA DATOS 2", snap);
+  /*admin.auth().createUserWithEmailAndPassword("").catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // ...
+  });*/
+})

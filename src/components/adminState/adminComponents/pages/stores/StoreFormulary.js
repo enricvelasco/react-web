@@ -13,7 +13,8 @@ import {Direction} from '../../../../inputs/direction/Direction'
 import firebase from 'firebase';
 import db from '../../../../../firebase'
 
-const sizeImage = {width:128, height:128}
+const sizeImage = {width:400, height:400}
+const sizeImageBig = {width:1024, height:280}
 export class StoreFormulary extends Component{
 
   constructor(props){
@@ -109,10 +110,10 @@ export class StoreFormulary extends Component{
   _paramsSection0=()=>{
       return(
         <div>
+          <Select inputTitle="Asociacón" resourceName="association" required={true} url={"association"} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.association}/>
           <InputText id="code" inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
           <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
-          <Select inputTitle="Asociacón" resourceName="association" required={true} url={"association"} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.association}/>
-          <InputArrayImages id="logo" inputTitle="Logo" resourceName="logo" sizeImage={sizeImage}  onResults={this._respInput} value={this.state.objectToSave.logo}/>
+
         </div>
       )
 
@@ -121,6 +122,8 @@ export class StoreFormulary extends Component{
     return(
       <div>
         <InputText id="domain2" inputTitle="Url Dominio" resourceName="domain" required={true} onResults={this._respInput} value={this.state.objectToSave.domain}/>
+        <InputArrayImages id="logo" inputTitle="Logo" resourceName="logo" sizeImage={sizeImage}  onResults={this._respInput} value={this.state.objectToSave.logo}/>
+        <InputArrayImages id="mainLogo" inputTitle="Logo" resourceName="mainLogo" sizeImage={sizeImageBig}  onResults={this._respInput} value={this.state.objectToSave.mainLogo}/>
       </div>
     )
   }

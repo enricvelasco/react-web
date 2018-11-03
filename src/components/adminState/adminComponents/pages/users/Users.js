@@ -47,14 +47,43 @@ export class Users extends Component{
     var user = firebase.auth().currentUser;
     object.userCreation = user.uid
     object.dateCreation = new Date()
-    db.collection(this.props.urlMapping).add(object)
+
+    //primero crea el usuario y despues añade los parametros a la bbdd
+    firebase.auth().createUserWithEmailAndPassword(object.email, object.password).then((user)=>{
+      console.log("USUARIO CREADO OK", user.user);
+      console.log("OBJETO CREAR", object);
+      object.uid = user.user.uid
+      if(object.userDomain.association !== undefined){
+        object.idAssociation = object.userDomain.association.id
+        object.idStore = object.userDomain.id
+      }else{
+        object.idAssociation = object.userDomain.id
+        object.idStore = null
+      }
+
+      delete object.password
+      db.collection(this.props.urlMapping).doc(object.uid).set(object)
+      .then(() => {
+          console.log("USUARIO AÑADIDO OK ");
+          this.setState({stateMode:"list"})
+      })
+      .catch(function(error) {
+          console.error("ERROR AL AÑADIR", error);
+      });
+
+    }).catch((error) => {
+      // Handle Errors here.
+      console.log("ERROR AL CREAR USUARIO", error);
+    });
+
+    /*db.collection(this.props.urlMapping).add(object)
     .then((docRef) => {
         console.log("ASOCIACION AÑADIDA OK: ", docRef.id);
         this.setState({stateMode:"list"})
     })
     .catch(function(error) {
         console.error("ERROR AL AÑADIR", error);
-    });
+    });*/
   }
 
   _onUpdate=(object)=>{
@@ -74,28 +103,24 @@ export class Users extends Component{
   }
 
   _loadStateMode=()=>{
+    var formulary
     switch (this.state.stateMode) {
       case "list":
           return(<UsersList title={this.title} subtitle={this.subtitle} urlMapping={this.props.urlMapping} filter={this.props.filter} onReturnEdit={this._onReturnEdit} onReturnNew={this._onReturnNew}/>)
-        break;
       case "new":
-          var formulary
-          if(this.props.personalizedComponentFormulary == "association"){
+          if(this.props.personalizedComponentFormulary === "association"){
             formulary=<UsersFormularyAssociation onCancel={this._onCancel} onSave={this._onSave} idAssociation={this.props.associationId}/>
           }else{
             formulary=<UsersFormulary onCancel={this._onCancel} onSave={this._onSave}/>
           }
           return formulary
-        break;
       case "edit":
-          var formulary
-          if(this.props.personalizedComponentFormulary == "association"){
+          if(this.props.personalizedComponentFormulary === "association"){
             formulary = <UsersFormularyAssociation onCancel={this._onCancel} onSave={this._onSave} idAssociation={this.props.associationId}/>
           }else{
-            formulary =< UsersFormularyAssociation onCancel={this._onCancel} onSave={this._onSave}/>
+            formulary =< UsersFormulary urlMapping={this.props.urlMapping} idUrl={this.idToEdit} onCancel={this._onCancel} onSave={this._onUpdate}/>
           }
           return formulary
-        break;
       default:
 
     }

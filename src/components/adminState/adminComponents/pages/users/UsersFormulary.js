@@ -8,6 +8,7 @@ import {InputArrayImages} from '../../../../inputs/images/InputArrayImages'
 import {SubgroupList} from '../../../../inputs/grid/SubgroupList'
 import {LinkColumn} from '../../../../inputs/grid/componentsColumns/LinkColumn'
 import {Users} from "../users/Users"
+import {Direction} from '../../../../inputs/direction/Direction'
 
 import firebase from 'firebase';
 import db from '../../../../../firebase'
@@ -27,6 +28,7 @@ export class UsersFormulary extends Component{
       //default object
       this.firstTime = true
       this.state.objectToSave={
+
       }
 
       this.state.errorTree={
@@ -40,10 +42,14 @@ export class UsersFormulary extends Component{
     if(this.state.loading){
       params = <div>loading...</div>
     }else{
-      if(this.state.tabSelect==0){
+      if(this.state.tabSelect===0){
         params = this._paramsSection0()
-      }else if(this.state.tabSelect==1){
+      }else if(this.state.tabSelect===1){
         params = this._paramsSection1()
+      }else if(this.state.tabSelect===2){
+        params = this._paramsSection2()
+      }else if(this.state.tabSelect===3){
+        params = this._paramsSection3()
       }
     }
 
@@ -57,7 +63,6 @@ export class UsersFormulary extends Component{
         <div className="tabs">
           <ul>
             <li className={this._isActive(0)} onClick={() => this._changeActiveTab(0)}><a>Datos públicos</a></li>
-            <li className={this._isActive(1)} onClick={() => this._changeActiveTab(1)}><a>Datos configuración</a></li>
           </ul>
         </div>
         <article id={this.state.tabSelect} className="margin-block-inputs">
@@ -95,31 +100,56 @@ export class UsersFormulary extends Component{
     })
     console.log("RESP INPUT",this.state.objectToSave);
 
+    //PARTE PERSONALIZADA
+    if(this.state.objectToSave.usersLevel !== undefined && this.state.objectToSave.usersLevel !== null){
+      switch (this.state.objectToSave.usersLevel.id) {
+        case ("DVNySnHN1mjDKKQ7srwq")://Niveles de tienda
+          this.setState({asignarDominio:"STORE"})
+        break;
+        case ("4jnemon4i4qcIAWqGDnR")://Niveles de tienda
+          this.setState({asignarDominio:"STORE"})
+        break;
+        case ("aGRHtQc98BazJeFpCiD9")://Niveles de asociaciones
+          this.setState({asignarDominio:"ASSOCIATION"})
+        break;
+        case ("nFELvYL5cYeuXwez9qys")://Niveles de asociaciones
+          this.setState({asignarDominio:"ASSOCIATION"})
+        break;
+        default:
+          this.setState({asignarDominio:null})
+        break;
+
+      }
+    }else{
+      this.setState({asignarDominio:null})
+    }
+
   }
 
   _paramsSection0=()=>{
+      var showDomainSelect;
+      if(this.state.asignarDominio === "STORE"){
+        showDomainSelect = <Select inputTitle="Tienda Dominio" resourceName="userDomain" required={true} url={"stores"} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.userDomain}/>
+      }else if(this.state.asignarDominio === "ASSOCIATION"){
+        showDomainSelect = <Select inputTitle="Asociación Dominio" resourceName="userDomain" required={true} url={"association"} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.userDomain}/>
+      }
+      var showPassword;
+      if(this.props.idUrl === undefined){
+        showPassword = <InputText id="password" inputTitle="Password" resourceName="password" required={true} onResults={this._respInput} value={this.state.objectToSave.password}/>
+      }
       return(
         <div>
+          <Select inputTitle="Nivel" resourceName="usersLevel" required={true} url={"usersLevels"} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.usersLevel}/>
+          {showDomainSelect}
           <InputText id="code" inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
           <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
-          <Select inputTitle="Nivel Usuario" resourceName="idUserLevel" required={true} url={"usersLevels"} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.idUserLevel}/>
+          {/*<InputArrayImages id="logo" inputTitle="Logo" resourceName="logo" sizeImage={sizeImage}  onResults={this._respInput} value={this.state.objectToSave.logo}/>*/}
+          <InputText id="phoneNumber" inputTitle="Telefono" resourceName="phoneNumber" required={false} onResults={this._respInput} value={this.state.objectToSave.phoneNumber}/>
+          <InputText id="email" inputTitle="Email" resourceName="email" required={true} onResults={this._respInput} value={this.state.objectToSave.email}/>
+          {showPassword}
         </div>
       )
 
-  }
-  _paramsSection1=()=>{
-    return(
-      <div>
-        <InputText id="domain2" inputTitle="Url Dominio" resourceName="domain" required={true} onResults={this._respInput} value={this.state.objectToSave.domain}/>
-      </div>
-    )
-  }
-
-  _moutColumns=()=>{
-    return( [
-      { key: 'codigoLink', name: 'Code', formatter: <LinkColumn nameLinkColumn="code" onResults={this._respuestaCampoLink}/>},
-      { key: 'name', name: 'Name'},
-      { key: 'idUserLevel', name: 'User level' }])
   }
 
   _loadArrayRadioButton=()=>{
@@ -146,6 +176,8 @@ export class UsersFormulary extends Component{
       case 2:
         this.setState({paramsMount:this._paramsSection2()})
       break;
+      default:
+      break;
 
     }
   }
@@ -160,7 +192,7 @@ export class UsersFormulary extends Component{
 	_isActive = (select) =>{
 		console.log("IS ACTIVE", select);
 		let classRet=""
-		if(this.state.tabSelect == select){
+		if(this.state.tabSelect === select){
 			classRet = "is-active"
 		}
 		return classRet

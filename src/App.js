@@ -13,6 +13,8 @@ import { Link } from 'react-router-dom';
 import {PrincipalPage} from "./components/pages/PrincipalPage"
 import {Notification} from "./components/states/Notification"
 import {AdminPage} from "./components/adminState/adminComponents/pages/AdminPage"
+import {StorePage} from "./components/adminState/adminComponents/pages/StorePage"
+import {AssociationPage} from "./components/adminState/adminComponents/pages/AssociationPage"
 import {ClientPage} from "./components/clientState/clientComponents/pages/ClientPage"
 
 
@@ -41,22 +43,19 @@ class App extends Component {
 
   _loadFormWithUserParams=()=>{
     console.log("STATE PRINCIPAL", this.state);
-    switch (this.state.userParams.idUserLevel) {
+    switch (this.state.userParams.usersLevel.id) {
       case "H9poGCqWdlF9UdMZd3WE"://admin ROOT
         return(<AdminPage onUpdateAppState={this._updateAppState} appState={this.state}/>)
-        break;
       case "nFELvYL5cYeuXwez9qys"://asociacion ADMIN
-        return(<ClientPage/>)
-        break;
+        return(<AssociationPage onUpdateAppState={this._updateAppState} appState={this.state}/>)
       case "aGRHtQc98BazJeFpCiD9"://asociacion empleado
-          return(<ClientPage/>)
-        break;
+          return(<AssociationPage onUpdateAppState={this._updateAppState} appState={this.state}/>)
       case "DVNySnHN1mjDKKQ7srwq"://tienda admin
-          return(<ClientPage/>)
-        break;
+          return(<StorePage onUpdateAppState={this._updateAppState} appState={this.state}/>)
       case "4jnemon4i4qcIAWqGDnR"://tienda admin
-          return(<ClientPage/>)
-        break;
+          return(<StorePage onUpdateAppState={this._updateAppState} appState={this.state}/>)
+      default:
+      break;
 
     }
   }

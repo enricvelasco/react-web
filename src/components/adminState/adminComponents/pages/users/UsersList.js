@@ -50,11 +50,17 @@ export class UsersList extends Component{
   _loadCollection=()=>{
     console.log("CARGA RESULTADOS COMBO",this.props);
       var collection = db.collection(this.props.urlMapping);
-      if(this.props.filter == undefined){
+      if(this.props.filter === undefined){
         this._loadData(collection)
       }else{
         var filter = this.props.filter;
+        /*var query = collection
+        filter.forEach((filterValue)=>{
+          query = query.where(filterValue[0], filterValue[1],filterValue[2])
+        })*/
+
         var query = collection.where(filter[0], filter[1],filter[2]);
+        //console.log("LA QUERY QUE ENVIAMOS", query);
         this._loadData(query)
       }
 
