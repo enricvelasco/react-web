@@ -32,6 +32,13 @@ export class ProductFormulary extends Component{
         productCategories:[]
       }
 
+      if(this.props.defaultValues !== undefined){
+        this.props.defaultValues.forEach((val)=>{
+          this.state.objectToSave[val.key] = val.value
+
+        })
+      }
+
       this.state.errorTree={
       }
       this.state.loading=false
@@ -101,11 +108,16 @@ export class ProductFormulary extends Component{
   }
 
   _paramsSection0=()=>{
+      var showStore;
+      if(!this.props.storeInputInvisible){
+        showStore=<Select inputTitle="Tienda" resourceName="store" required={true} url={"stores"} showFields={["code", "name"]} filter={this.props.storesFilter} onResults={this._respInput} value={this.state.objectToSave.store}/>
+      }
       return(
         <div>
+          {showStore}
           <InputText id="code" inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
           <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
-          <Select inputTitle="Tienda" resourceName="store" required={true} url={"stores"} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.store}/>
+
           <InputArrayImages id="logo" inputTitle="Logo" resourceName="logo" sizeImage={sizeImage}  onResults={this._respInput} value={this.state.objectToSave.logo}/>
         </div>
       )

@@ -87,7 +87,7 @@ export class Store extends Component{
           //if(this.props.personalizedComponentFormulary == "association"){
           //  formulary=<UsersFormularyAssociation onCancel={this._onCancel} onSave={this._onSave} idAssociation={this.props.associationId}/>
           //}else{
-            formulary=<StoreFormulary onCancel={this._onCancel} onSave={this._onSave}/>
+            formulary=<StoreFormulary defaultValues={this.props.defaultValues} associationInputInvisible={this.props.associationInputInvisible} onCancel={this._onCancel} onSave={this._onSave}/>
           //}
           return formulary
         break;
@@ -96,7 +96,7 @@ export class Store extends Component{
           //if(this.props.personalizedComponentFormulary == "association"){
           //  formulary = <UsersFormularyAssociation onCancel={this._onCancel} onSave={this._onSave} idAssociation={this.props.associationId}/>
           //}else{
-            formulary =< StoreFormulary urlMapping={this.props.urlMapping} idUrl={this.idToEdit} onCancel={this._onCancel} onSave={this._onUpdate}/>
+            formulary =< StoreFormulary associationInputInvisible={this.props.associationInputInvisible} urlMapping={this.props.urlMapping} idUrl={this.idToEdit} onCancel={this._onCancel} onSave={this._onUpdate}/>
           //}
           return formulary
         break;

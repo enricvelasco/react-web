@@ -33,6 +33,13 @@ export class StoreFormulary extends Component{
         storeCategories:[]
       }
 
+      if(this.props.defaultValues !== undefined){
+        this.props.defaultValues.forEach((val)=>{
+          this.state.objectToSave[val.key] = val.value
+
+        })
+      }
+
       this.state.errorTree={
       }
       this.state.loading=false
@@ -108,9 +115,14 @@ export class StoreFormulary extends Component{
   }
 
   _paramsSection0=()=>{
+      var showAsoc
+      if(!this.props.associationInputInvisible){
+        showAsoc = <Select inputTitle="Asociacón" resourceName="association" required={true} url={"association"} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.association}/>
+
+      }
       return(
         <div>
-          <Select inputTitle="Asociacón" resourceName="association" required={true} url={"association"} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.association}/>
+          {showAsoc}
           <InputText id="code" inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
           <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
 

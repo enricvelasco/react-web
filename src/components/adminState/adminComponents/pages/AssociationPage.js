@@ -22,13 +22,25 @@ export class AssociationPage extends Component {
     switch (itemSelected) {
       case "userParams":
           //this.state.content = <Users urlMapping="userParams"/>
-          this.setState({content:(<Users urlMapping="userParams" initialState="list" filter={["idAssociation","==",this.props.appState.userParams.userDomain.id]}/>)})
+          this.setState({content:(<Users urlMapping="userParams" initialState="list" filter={["idAssociation","==",this.props.appState.userParams.idAssociation]}/>)})
       break;
       case "products":
-          this.setState({content:(<Product urlMapping="products" initialState="list" filter={["store.association.id","==",this.props.appState.userParams.userDomain.id]}/>)})
+          this.setState({content:(<Product
+                                        urlMapping="products"
+                                        initialState="list"
+                                        filter={["store.association.id","==",this.props.appState.userParams.idAssociation]}
+                                        storesFilter={["association.id","==",this.props.appState.userParams.idAssociation]}
+                                  />)})
       break;
       case "stores":
-          this.setState({content:(<Store urlMapping="stores" initialState="list" filter={["association.id","==",this.props.appState.userParams.userDomain.id]}/>)})
+          this.setState({content:(<Store urlMapping="stores"
+                                          initialState="list"
+                                          associationInputInvisible = {true}
+                                          defaultValues = {[
+                                                            {key:"association", value:{id:this.props.appState.userParams.idAssociation}}
+                                                          ]}
+                                          filter={["association.id","==",this.props.appState.userParams.idAssociation]}
+                                  />)})
       break;
 
       default:
