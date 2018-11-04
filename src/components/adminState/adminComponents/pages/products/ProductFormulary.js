@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {InputText} from '../../../../inputs/text/InputText'
+import {TextArea} from '../../../../inputs/text/TextArea'
 import {Checkbox} from '../../../../inputs/checkbox/Checkbox'
 import {Radio} from '../../../../inputs/radio/Radio'
 import {Select} from '../../../../inputs/select/Select'
@@ -55,6 +56,9 @@ export class ProductFormulary extends Component{
       }else if(this.state.tabSelect===1){
         params = this._paramsSection1()
       }
+      else if(this.state.tabSelect===2){
+        params = this._paramsSection2()
+      }
     }
 
 
@@ -68,6 +72,7 @@ export class ProductFormulary extends Component{
           <ul>
             <li className={this._isActive(0)} onClick={() => this._changeActiveTab(0)}><a>Datos públicos</a></li>
             <li className={this._isActive(1)} onClick={() => this._changeActiveTab(1)}><a>Categorías</a></li>
+            <li className={this._isActive(2)} onClick={() => this._changeActiveTab(2)}><a>Especificaciones</a></li>
           </ul>
         </div>
         <article id={this.state.tabSelect} className="margin-block-inputs">
@@ -118,7 +123,7 @@ export class ProductFormulary extends Component{
           <InputText id="code" inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
           <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
 
-          <InputArrayImages id="logo" inputTitle="Logo" resourceName="logo" sizeImage={sizeImage}  onResults={this._respInput} value={this.state.objectToSave.logo}/>
+          <InputArrayImages id="logo" inputTitle="Fotos" resourceName="logo" sizeImage={sizeImage}  onResults={this._respInput} value={this.state.objectToSave.logo}/>
         </div>
       )
 
@@ -128,6 +133,14 @@ export class ProductFormulary extends Component{
     return(
       <div>
       <Categories inputTitle="Categorías de Tiendas" resourceName="productCategories" showFields={["code", "name"]} url={"productCategories"} onResults={this._respInput} value={this.state.objectToSave.productCategories}/>
+      </div>
+    )
+  }
+
+  _paramsSection2=()=>{
+    return(
+      <div>
+        <TextArea id="specifications" inputTitle="Especificaciones" resourceName="specifications" required={false} onResults={this._respInput} value={this.state.objectToSave.specifications}/>
       </div>
     )
   }

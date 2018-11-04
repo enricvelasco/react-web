@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {LateralMenuAssociation} from "../components/LateralMenuAssociation"
 import {NavBarAdmin} from "../components/NavBarAdmin"
+import {ProfileContent} from "../components/ProfileContent"
 import {RecordsList} from "./RecordsList"
 
 import {Users} from "./users/Users"
@@ -55,6 +56,9 @@ export class AssociationPage extends Component {
         <div className="content content-margin">
             <div className="columns">
               <div className="column is-one-quarter">
+                <div className="box">
+                  <ProfileContent userParams={this.props.appState.userParams}/>
+                </div>
                 <div className="box">
                   <LateralMenuAssociation onItemSelected={this._menuItemSelected}/>
                 </div>
