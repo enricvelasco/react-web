@@ -9,6 +9,7 @@ import {SubgroupList} from '../../../../inputs/grid/SubgroupList'
 import {LinkColumn} from '../../../../inputs/grid/componentsColumns/LinkColumn'
 import {Users} from "../users/Users"
 import {Direction} from '../../../../inputs/direction/Direction'
+import {SimpleMap} from '../../../../inputs/maps/SimpleMap'
 
 import firebase from 'firebase';
 import db from '../../../../../firebase'
@@ -144,6 +145,7 @@ export class StoreFormulary extends Component{
     return(
       <div>
         <Direction id="direction" resourceName="direction" onResults={this._respInput} value={this.state.objectToSave.direction}/>
+        <SimpleMap/>
       </div>
     )
   }
