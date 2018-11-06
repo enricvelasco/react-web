@@ -161,6 +161,53 @@ exports.deleteStoresPublic = functions.firestore
 });
 //FIN TIENDAS***************************************
 
+
+//PRODUCTOS*****************************************
+exports.createProductPublic = functions.firestore
+    .document('product/{productId}')//params: { associationId: 'bgQF9MYa1jmhsU7pv62l' }
+    .onCreate((snap, context) => {
+      const db = admin.firestore();
+      console.log("ENTRADA DATOS", context.params.associationId);
+
+      db.collection("product").doc(context.params.associationId).get().then((doc) => {
+        var objPublic = {
+          id: doc.id,
+          code: doc.data().code,
+          name: doc.data().name,
+          logo: doc.data().logo
+        }
+        db.collection("productPublic").doc(context.params.associationId).set(objPublic)
+        .then(() => {
+            console.log("Document successfully written!");
+        })
+        .catch(function(error) {
+            console.error("ERROR AL AÑADIR", error);
+        });
+
+      }).catch((err)=>{
+        console.log(err);
+      });
+});
+
+exports.updateProductPublic = functions.firestore
+    .document('product/{productId}')
+    .onUpdate((change, context) => {
+      const db = admin.firestore();
+      var objPublic = {
+        code: change.after.data().code,
+        name: change.after.data().name,
+        logo: change.after.data().logo
+      }
+      db.collection("productPublic").doc(context.params.associationId).update(objPublic)
+      .then((ret) => {
+          console.log("UPDATED OK", ret);
+      })
+      .catch(function(error) {
+          console.error("ERROR AL ACTUALIZAR", error);
+      });
+});
+
+
 //ASOCIACIONES***************************************
 exports.createAssociationPublic = functions.firestore
     .document('association/{associationId}')//params: { associationId: 'bgQF9MYa1jmhsU7pv62l' }

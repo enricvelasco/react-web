@@ -15,6 +15,8 @@ import firebase from 'firebase';
 import db from '../../../../../firebase'
 
 const sizeImage = {width:128, height:128}
+const sizeImagePoster = {width:375, height:667}
+
 export class ProductFormulary extends Component{
 
   constructor(props){
@@ -124,6 +126,7 @@ export class ProductFormulary extends Component{
           <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
 
           <InputArrayImages id="logo" inputTitle="Fotos" resourceName="logo" sizeImage={sizeImage}  onResults={this._respInput} value={this.state.objectToSave.logo}/>
+          <InputArrayImages id="poster" inputTitle="Cartel App" resourceName="poster" sizeImage={sizeImagePoster}  onResults={this._respInput} value={this.state.objectToSave.poster}/>
         </div>
       )
 
