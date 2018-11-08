@@ -5,7 +5,7 @@ export class Direction extends Component{
   constructor(props){
     super(props)
 
-    if(props.value != undefined){
+    if(props.value !== undefined){
         this.value = props.value
     }else{
         this.value = {

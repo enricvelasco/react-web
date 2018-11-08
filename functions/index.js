@@ -173,9 +173,17 @@ exports.createProductPublic = functions.firestore
         var objPublic = {
           id: doc.id,
           code: doc.data().code,
-          name: doc.data().name,
-          logo: doc.data().logo
+          name: doc.data().name/*,
+          logo: doc.data().logo,
+          poster: doc.data().poster*/
         }
+        if(doc.data().logo !== undefined){
+          objPublic.logo = doc.data().logo
+        }
+        if(doc.data().poster !== undefined){
+          objPublic.poster = doc.data().poster
+        }
+
         db.collection("productPublic").doc(context.params.associationId).set(objPublic)
         .then(() => {
             console.log("Document successfully written!");
@@ -195,8 +203,15 @@ exports.updateProductPublic = functions.firestore
       const db = admin.firestore();
       var objPublic = {
         code: change.after.data().code,
-        name: change.after.data().name,
-        logo: change.after.data().logo
+        name: change.after.data().name/*,
+        logo: doc.data().logo,
+        poster: doc.data().poster*/
+      }
+      if(change.after.data().logo !== undefined){
+        objPublic.logo = change.after.data().logo
+      }
+      if(change.after.data().poster !== undefined){
+        objPublic.poster = change.after.data().poster
       }
       db.collection("productPublic").doc(context.params.associationId).update(objPublic)
       .then((ret) => {
