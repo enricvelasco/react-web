@@ -5,7 +5,7 @@ const firestore = new Firestore();*/
 
 admin.initializeApp(functions.config().firebase);
 
-const database = admin.database();
+//const database = admin.database();
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
