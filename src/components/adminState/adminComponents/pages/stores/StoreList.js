@@ -10,7 +10,12 @@ export class StoreList extends Component{
   constructor(props){
     super(props)
     this.state={loading:true}
-    this._loadCollection()
+    if(this.props.filterKeyDoc === undefined){
+      this._loadCollection()
+    }else{
+      this._loadDoc()
+    }
+
     //this._moutColumns(
   }
 
@@ -83,10 +88,29 @@ export class StoreList extends Component{
     });
   }
 
+  _loadDoc=()=>{
+    this.rows = []
+    db.collection(this.props.urlMapping).doc(this.props.filterKeyDoc).get().then((docData) => {
+      if(docData.exists){
+        let registro = {}
+
+        registro = docData.data()
+        registro.id = docData.id
+        registro.codigoLink = {id:registro.id, code:registro.code}
+        this.rows.push(registro)
+
+        this._moutColumns()
+        this.setState({loading:false})
+      }
+    }).catch((err)=>{
+      console.log(err)
+    })
+  }
+
   _selectedRowsManagement=(rowArr)=>{
     rowArr.forEach((resp) =>{
       this.rows.forEach((son) =>{
-        if(resp.id == son.id){
+        if(resp.id === son.id){
           son.selected = resp.selected
         }
       })
@@ -116,7 +140,7 @@ export class StoreList extends Component{
           <p className="title">{this.props.title == null? "" : this.props.title}</p>
           <p className="subtitle">{this.props.subtitle == null? "" : this.props.subtitle}</p>
         </div>
-        <HeaderButtons retActionButton={this._actionButton}/>
+        <HeaderButtons retActionButton={this._actionButton} showNewButton={this.props.showNewButton} showDeleteButton={this.props.showDeleteButton}/>
         {this.state.loading?
           <Loading/>
           :

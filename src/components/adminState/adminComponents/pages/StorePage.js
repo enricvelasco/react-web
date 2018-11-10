@@ -7,6 +7,8 @@ import {Users} from "./users/Users"
 import {Product} from "./products/Product"
 import {Store} from "./stores/Store"
 
+import {ProfileContent} from "../components/ProfileContent"
+
 //import 'w3-css/w3.css';
 
 export class StorePage extends Component {
@@ -14,12 +16,24 @@ export class StorePage extends Component {
     super(props)
     this.state = {}
     this.state.content = <RecordsList/>
-    console.log("ASSOCIATION PROPS", props);
+
+    document.body.style.backgroundColor = "red";
+    //document.getElementById("boxMenuLateral").style.backgroundColor = "lightblue";
+    console.log("TIENDA_PROPS", props);
   }
 
   _menuItemSelected=(itemSelected)=>{
     console.log("ITEM SELECTED", itemSelected);
     switch (itemSelected) {
+      case "stores":
+        this.setState({content:(<Store
+                                urlMapping="stores"
+                                initialState="list"
+                                filterKeyDoc={this.props.appState.userParams.idStore}
+                                showNewButton = {false}
+                                showDeleteButton = {false}
+                                />)})
+      break;
       case "products":
           this.setState({content:(<Product
                                         urlMapping="products"
@@ -37,7 +51,13 @@ export class StorePage extends Component {
     }
   }
 
+  componentDidMount(){
+    console.log("COMPONENT DID MOUNT");
+    document.getElementById("boxMenuLateral").style.backgroundColor = "lightblue";
+  }
+
   render(){
+    console.log("--------------RENDER");
     return(
       <div>
         <NavBarAdmin/>
@@ -45,6 +65,9 @@ export class StorePage extends Component {
             <div className="columns">
               <div className="column is-one-quarter">
                 <div className="box">
+                  <ProfileContent userParams={this.props.appState.userParams}/>
+                </div>
+                <div id="boxMenuLateral" className="box">
                   <LateralMenuStore onItemSelected={this._menuItemSelected}/>
                 </div>
               </div>

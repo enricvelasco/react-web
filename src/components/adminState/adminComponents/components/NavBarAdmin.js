@@ -9,7 +9,7 @@ export class NavBarAdmin extends Component{
     return(
       <nav className="navbar is-transparent" role="navigation" aria-label="dropdown navigation">
         <a className="navbar-item">
-          <img src="https://bulma.io/images/bulma-logo.png" alt="Bulma: a modern CSS framework based on Flexbox" width="112" height="28"/>
+          <img src="https://firebasestorage.googleapis.com/v0/b/visitore-cli.appspot.com/o/system%2Flogos%2FlateralCompleto.png?alt=media&token=d5bed93b-3dc9-4b1a-9061-f99073bb92e0" alt="Bulma: a modern CSS framework based on Flexbox" width="112" height="28"/>
         </a>
       </nav>
     )

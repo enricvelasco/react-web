@@ -80,7 +80,17 @@ export class Store extends Component{
   _loadStateMode=()=>{
     switch (this.state.stateMode) {
       case "list":
-          return(<StoreList title={this.title} subtitle={this.subtitle} urlMapping={this.props.urlMapping} filter={this.props.filter} onReturnEdit={this._onReturnEdit} onReturnNew={this._onReturnNew}/>)
+          return(<StoreList
+                  title={this.title}
+                  subtitle={this.subtitle}
+                  urlMapping={this.props.urlMapping}
+                  filter={this.props.filter}
+                  onReturnEdit={this._onReturnEdit}
+                  onReturnNew={this._onReturnNew}
+                  filterKeyDoc={this.props.filterKeyDoc}
+                  showNewButton={this.props.showNewButton}
+                  showDeleteButton={this.props.showDeleteButton}
+                  />)
         break;
       case "new":
           var formulary

@@ -7,6 +7,7 @@ import {RecordsList} from "./RecordsList"
 import {Users} from "./users/Users"
 import {Product} from "./products/Product"
 import {Store} from "./stores/Store"
+import {Association} from "./association/Association"
 
 //import 'w3-css/w3.css';
 
@@ -21,6 +22,15 @@ export class AssociationPage extends Component {
   _menuItemSelected=(itemSelected)=>{
     console.log("ITEM SELECTED", itemSelected);
     switch (itemSelected) {
+      case "association":
+      this.setState({content:(<Association
+                                urlMapping="association"
+                                initialState="list"
+                                filterKeyDoc={this.props.appState.userParams.idAssociation}
+                                showNewButton = {false}
+                                showDeleteButton = {false}
+                              />)})
+      break;
       case "userParams":
           //this.state.content = <Users urlMapping="userParams"/>
           this.setState({content:(<Users

@@ -16,10 +16,16 @@ export class LateralMenuAssociation extends Component {
       <div>
         <aside className="menu has-text-left margenes-menu-lat">
           <p className="menu-label">
-            Users
+            Usuarios
           </p>
           <ul className="menu-list">
             <li onClick={((e) => this._elementClicked(e, "userParams"))}><Link to='/userParams'>Usuarios</Link></li>
+          </ul>
+          <p className="menu-label">
+            Asociacion
+          </p>
+          <ul className="menu-list">
+            <li onClick={((e) => this._elementClicked(e, "association"))}><Link to='/association'>Asociacion</Link></li>
           </ul>
           <p className="menu-label">
             Tiendas

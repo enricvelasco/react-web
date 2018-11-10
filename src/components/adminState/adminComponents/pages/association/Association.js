@@ -74,14 +74,20 @@ export class Association extends Component{
   _loadStateMode=()=>{
     switch (this.state.stateMode) {
       case "list":
-          return(<AssociationList title={this.title} subtitle={this.subtitle} urlMapping={this.props.urlMapping} onReturnEdit={this._onReturnEdit} onReturnNew={this._onReturnNew}/>)
-        break;
+          return(<AssociationList
+            title={this.title}
+            subtitle={this.subtitle}
+            urlMapping={this.props.urlMapping}
+            onReturnEdit={this._onReturnEdit}
+            onReturnNew={this._onReturnNew}
+            filterKeyDoc={this.props.filterKeyDoc}
+            showNewButton={this.props.showNewButton}
+            showDeleteButton={this.props.showDeleteButton}
+            />)
       case "new":
           return(<AssociationFormulary onCancel={this._onCancel} onSave={this._onSave}/>)
-        break;
       case "edit":
           return(<AssociationFormulary urlMapping={this.props.urlMapping} idUrl={this.idToEdit} onCancel={this._onCancel} onSave={this._onUpdate}/>)
-        break;
       default:
 
     }

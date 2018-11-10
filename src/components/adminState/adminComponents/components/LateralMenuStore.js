@@ -15,6 +15,15 @@ export class LateralMenuStore extends Component {
     return(
       <div>
         <aside className="menu has-text-left margenes-menu-lat">
+          <p className="menu-label">
+            Tienda
+          </p>
+          <ul className="menu-list">
+            <li onClick={((e) => this._elementClicked(e, "stores"))}><Link to='/stores'>Tienda</Link></li>
+          </ul>
+          <p className="menu-label">
+            Productos
+          </p>
           <ul className="menu-list">
             <li onClick={((e) => this._elementClicked(e, "products"))}><Link to='/products'>Productos</Link></li>
           </ul>
