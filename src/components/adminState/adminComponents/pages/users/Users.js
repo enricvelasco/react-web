@@ -109,14 +109,14 @@ export class Users extends Component{
           return(<UsersList title={this.title} subtitle={this.subtitle} urlMapping={this.props.urlMapping} filter={this.props.filter} onReturnEdit={this._onReturnEdit} onReturnNew={this._onReturnNew}/>)
       case "new":
           if(this.props.personalizedComponentFormulary === "association"){
-            formulary=<UsersFormularyAssociation onCancel={this._onCancel} onSave={this._onSave} idAssociation={this.props.associationId}/>
+            formulary=<UsersFormularyAssociation onCancel={this._onCancel} onSave={this._onSave} idAssociation={this.props.idAssociation} userLevelFilter={this.props.userLevelFilter}/>
           }else{
             formulary=<UsersFormulary onCancel={this._onCancel} onSave={this._onSave}/>
           }
           return formulary
       case "edit":
           if(this.props.personalizedComponentFormulary === "association"){
-            formulary = <UsersFormularyAssociation onCancel={this._onCancel} onSave={this._onSave} idAssociation={this.props.associationId}/>
+            formulary = <UsersFormularyAssociation urlMapping={this.props.urlMapping} idUrl={this.idToEdit} onCancel={this._onCancel} onSave={this._onSave} idAssociation={this.props.idAssociation} userLevelFilter={this.props.userLevelFilter}/>
           }else{
             formulary =< UsersFormulary urlMapping={this.props.urlMapping} idUrl={this.idToEdit} onCancel={this._onCancel} onSave={this._onUpdate}/>
           }

@@ -19,7 +19,7 @@ export class LateralMenuAssociation extends Component {
             Users
           </p>
           <ul className="menu-list">
-            <li onClick={((e) => this._elementClicked(e, "userParams"))}><Link to='/userParams'>Users Params</Link></li>
+            <li onClick={((e) => this._elementClicked(e, "userParams"))}><Link to='/userParams'>Usuarios</Link></li>
           </ul>
           <p className="menu-label">
             Tiendas

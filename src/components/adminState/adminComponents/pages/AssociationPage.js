@@ -23,7 +23,14 @@ export class AssociationPage extends Component {
     switch (itemSelected) {
       case "userParams":
           //this.state.content = <Users urlMapping="userParams"/>
-          this.setState({content:(<Users urlMapping="userParams" initialState="list" filter={["idAssociation","==",this.props.appState.userParams.idAssociation]}/>)})
+          this.setState({content:(<Users
+                                    urlMapping="userParams"
+                                    initialState="list"
+                                    filter={["idAssociation","==",this.props.appState.userParams.idAssociation]}
+                                    personalizedComponentFormulary="association"
+                                    idAssociation = {this.props.appState.userParams.idAssociation}
+                                    userLevelFilter = {["isAccessFromAssociation","==",true]}
+                                  />)})
       break;
       case "products":
           this.setState({content:(<Product

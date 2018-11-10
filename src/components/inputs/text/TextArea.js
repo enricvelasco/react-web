@@ -81,7 +81,7 @@ export class TextArea extends Component{
     this.isRequired = nextProps.required
     this.inputTitle = nextProps.inputTitle
     this.errorState = false
-    if(nextProps.value == undefined){
+    if(nextProps.value === undefined){
       this.value = ""
     }else{
       this.value = nextProps.value

@@ -169,7 +169,7 @@ exports.createProductPublic = functions.firestore
       const db = admin.firestore();
       console.log("ENTRADA DATOS", context.params.productId);
 
-      db.collection("product").doc(context.params.productId).get().then((doc) => {
+      db.collection("products").doc(context.params.productId).get().then((doc) => {
         var objPublic = {
           id: doc.id,
           code: doc.data().code,
@@ -184,7 +184,7 @@ exports.createProductPublic = functions.firestore
           objPublic.poster = doc.data().poster
         }
 
-        db.collection("productPublic").doc(context.params.productId).set(objPublic)
+        db.collection("productsPublic").doc(context.params.productId).set(objPublic)
         .then(() => {
             console.log("Document successfully written!");
         })
@@ -213,7 +213,7 @@ exports.updateProductPublic = functions.firestore
       if(change.after.data().poster !== undefined){
         objPublic.poster = change.after.data().poster
       }
-      db.collection("productPublic").doc(context.params.productId).update(objPublic)
+      db.collection("productsPublic").doc(context.params.productId).update(objPublic)
       .then((ret) => {
           console.log("UPDATED OK", ret);
       })
@@ -222,11 +222,11 @@ exports.updateProductPublic = functions.firestore
       });
 });
 
-exports.deleteAssociationPublic = functions.firestore
+exports.deleteProductPublic = functions.firestore
     .document('products/{productId}')
     .onDelete((change, context) => {
       const db = admin.firestore();
-      db.collection("productPublic").doc(context.params.productId).delete().then(() =>{
+      db.collection("productsPublic").doc(context.params.productId).delete().then(() =>{
           console.log("Document successfully deleted!");
       }).catch(function(error) {
           console.error("Error removing document: ", error);

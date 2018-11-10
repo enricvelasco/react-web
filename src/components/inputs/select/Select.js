@@ -2,6 +2,14 @@ import React, { Component } from 'react';
 import firebase from 'firebase';
 import db from '../../../firebase'
 
+/*const dataOrPromise = new Promise(
+  (resolve, reject) => { // fat arrow
+    resolve("HOLAS");
+    //reject(reason);
+
+  }
+);*/
+
 export class Select extends Component{
   constructor(props){
     super(props)
@@ -46,21 +54,43 @@ export class Select extends Component{
   _cargarResultadosCombo=()=>{
     console.log("CARGA RESULTADOS COMBO",this.props);
       var collection = db.collection(this.props.url);
-      if(this.props.filter == undefined){
+      var query;
+      if(this.props.filter === undefined && this.props.filterOR === undefined){
         this._consulta(collection)
-      }else{
+      }else{//filter AND
         var filter = this.props.filter;
-        var query = collection.where(filter[0], filter[1],filter[2]);
+
+        /*if(Array.isArray(filter)){
+          query = collection
+          filter.forEach((val)=>{
+            console.log("VALOR VAL", val[0], val[1], val[2]);
+            query = query.where(val[0], val[1],val[2])
+          })
+        }else{*/
+          query = collection.where(filter[0], filter[1],filter[2]);
+        //}
         this._consulta(query)
       }
-
   }
+
+
+
+  /*_getDataOr=()=>{
+    dataOrPromise
+    .then(()=>{
+      console.log("PROMISE OK");
+    })
+    .catch(()=>{
+      console.log("PROMISE ERROR");
+    })
+  }*/
+
+
 
   _consulta=(coll)=>{
     coll.get().then((querySnapshot) => {
       //var arrRet = []
       //var objResp = []
-      var cont = 0;
         querySnapshot.forEach((doc) =>{
           let resp = doc.data()
           let obj = {}
@@ -68,7 +98,7 @@ export class Select extends Component{
           obj.id = doc.id
           obj.name=  resp[this.props.showFields[0]] +"-"+ resp[this.props.showFields[1]]
 
-          if(this.props.value != null && this.props.value.id == obj.id){
+          if(this.props.value != null && this.props.value.id === obj.id){
             this.value = obj.id
             this.arrRet.push(<option value={doc.id} selected>{obj.name}</option>)
           }else{
@@ -77,8 +107,6 @@ export class Select extends Component{
 
           resp.id = obj.id
           this.objResp.push(resp)
-
-          cont ++;
         });
         this.setState({
           camposCombo:this.arrRet,
@@ -118,17 +146,17 @@ export class Select extends Component{
     console.log("CAMBIO EN SELECT", e.target.value);
     var value
     this.state.objsToSelect.forEach((elem)=>{
-      if(e.target.value==0){
+      if(e.target.value === 0){
         value=null
       }
-      else if(elem.id == e.target.value){
+      else if(elem.id === e.target.value){
         value = elem
       }
     })
 
     this.value = e.target.value
 
-    if(this.isRequired && this.value == 0){
+    if(this.isRequired && this.value === 0){
       console.log("ERROR SELECT OBLIGATORIO!!!!!!");
       this.errorState = true
     }else{
@@ -145,7 +173,7 @@ export class Select extends Component{
     if(this.state.loading){
       console.log("SELECT LOADING!!!!!!");
       selectionState = this._mountSelectLoading()
-    }else if(this.isRequired && this.value == 0){
+    }else if(this.isRequired && this.value === 0){
       console.log("SELECT ERROR!!!!!!");
       this.errorState = true
       selectionState = <div className="select select-size is-danger ">
@@ -172,6 +200,31 @@ export class Select extends Component{
 
       </div>
     )
+  }
+
+  shouldComponentUpdate(nextProps, nextState){
+    console.log("SHOUD COMP UPDATE", nextProps,nextState)
+    //this.state.camposCombo = nextState.camposCombo
+    //this.state.loading = nextState.loading
+    //this.state.objsToSelect = nextState.objsToSelect
+
+    /*this.setState({
+      camposCombo:nextState.camposCombo,
+      loading:nextState.loading,
+      objsToSelect:nextState.objsToSelect
+    })*/
+    /*this.idComp = nextProps.id
+    this.isRequired = nextProps.required
+    this.inputTitle = nextProps.inputTitle
+    this.errorState = false
+    if(nextProps.value == undefined){
+      this.value = ""
+    }else{
+      this.value = nextProps.value
+    }*/
+
+
+    return true
   }
 }
 

@@ -102,8 +102,9 @@ export class UserLevelsFormulary extends Component{
         <div>
           <InputText id="code" inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
           <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
-          <Select inputTitle="Tipo Usuario" resourceName="idUserTipo" required={true} url={"tipoUsuario"} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.idUserTipo}/>
-
+          {/*<Select inputTitle="Tipo Usuario" resourceName="idUserTipo" required={true} url={"tipoUsuario"} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.idUserTipo}/>*/}
+          <Checkbox inputTitle="Accesible desde Asociación" resourceName="isAccessFromAssociation" onResults={this._respInput} value={this.state.objectToSave.isAccessFromAssociation}/>
+          <Checkbox inputTitle="Accesible desde Tienda" resourceName="isAccessFromStore" onResults={this._respInput} value={this.state.objectToSave.isAccessFromStore}/>
           <InputText id="observations" inputTitle="Observaciones" resourceName="observations" required={false} onResults={this._respInput} value={this.state.objectToSave.observations}/>
 
         </div>
