@@ -17,7 +17,7 @@ export class StorePage extends Component {
     this.state = {}
     this.state.content = <RecordsList/>
 
-    document.body.style.backgroundColor = "red";
+
     //document.getElementById("boxMenuLateral").style.backgroundColor = "lightblue";
     console.log("TIENDA_PROPS", props);
   }
@@ -52,9 +52,20 @@ export class StorePage extends Component {
   }
 
   componentDidMount(){
-    console.log("COMPONENT DID MOUNT");
-    document.getElementById("boxMenuLateral").style.backgroundColor = "lightblue";
+    console.log("COMPONENT DID MOUNT", this.props);
+    document.body.style.backgroundColor = this.props.appState.commerce.backgroudColor
+    document.getElementById("boxMenuLateral").style.backgroundColor = this.props.appState.commerce.menuColor
+    document.getElementById("boxProfileContent").style.backgroundColor = this.props.appState.commerce.profileColor
+    document.getElementById("contentBox").style.backgroundColor = this.props.appState.commerce.contentBoxColor
+    //document.getElementsByClassName("text-box-profile").style.color =  this.props.appState.commerce.fontProfileMenuColor
+
+    var x = document.getElementsByClassName("text-box-profile");
+    var i;
+    for (i = 0; i < x.length; i++) {
+        x[i].style.color = this.props.appState.commerce.fontProfileMenuColor
+    }
   }
+
 
   render(){
     console.log("--------------RENDER");
@@ -64,7 +75,7 @@ export class StorePage extends Component {
         <div className="content content-margin">
             <div className="columns">
               <div className="column is-one-quarter">
-                <div className="box">
+                <div id="boxProfileContent" className="box">
                   <ProfileContent userParams={this.props.appState.userParams}/>
                 </div>
                 <div id="boxMenuLateral" className="box">
@@ -72,7 +83,7 @@ export class StorePage extends Component {
                 </div>
               </div>
               <div className="column">
-                <div className="box">
+                <div id="contentBox" className="box">
                   {this.state.content}
                 </div>
               </div>

@@ -27,6 +27,8 @@ export class PrincipalPage extends Component{
   }
 
   _appStateReturn=(appStateReturned)=>{
+
+    console.log("APPSTATE RETURNED", appStateReturned);
     this.props.onResults(appStateReturned)
   }
 

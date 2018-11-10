@@ -10,6 +10,8 @@ import {LinkColumn} from '../../../../inputs/grid/componentsColumns/LinkColumn'
 import {Users} from "../users/Users"
 import {Direction} from '../../../../inputs/direction/Direction'
 import {SimpleMap} from '../../../../inputs/maps/SimpleMap'
+import {InputColorPicker} from '../../../../inputs/colorPicker/InputColorPicker'
+
 
 import firebase from 'firebase';
 import db from '../../../../../firebase'
@@ -135,8 +137,20 @@ export class StoreFormulary extends Component{
     return(
       <div>
         <InputText id="domain2" inputTitle="Url Dominio" resourceName="domain" required={true} onResults={this._respInput} value={this.state.objectToSave.domain}/>
+        <InputColorPicker id="backgroudColor" inputTitle="Color Fondo" resourceName="backgroudColor" required={false} onResults={this._respInput} value={this.state.objectToSave.backgroudColor}/>
+
+        <InputColorPicker id="profileColor" inputTitle="Color box perfil" resourceName="profileColor" required={false} onResults={this._respInput} value={this.state.objectToSave.profileColor}/>
+        <InputColorPicker id="fontProfileMenuColor" inputTitle="Color fuente box perfil" resourceName="fontProfileMenuColor" required={false} onResults={this._respInput} value={this.state.objectToSave.fontProfileMenuColor}/>
+
+        <InputColorPicker id="menuColor" inputTitle="Color box menú lateral" resourceName="menuColor" required={false} onResults={this._respInput} value={this.state.objectToSave.menuColor}/>
+        <InputColorPicker id="fontMenuColor" inputTitle="Color fuente menú lateral" resourceName="fontMenuColor" required={false} onResults={this._respInput} value={this.state.objectToSave.fontMenuColor}/>
+
+        <InputColorPicker id="contentBoxColor" inputTitle="Color box central" resourceName="contentBoxColor" required={false} onResults={this._respInput} value={this.state.objectToSave.contentBoxColor}/>
+        <InputColorPicker id="fontContentBox" inputTitle="Color fuente box central" resourceName="fontContentBox" required={false} onResults={this._respInput} value={this.state.objectToSave.fontContentBox}/>
+
+
         <InputArrayImages id="logo" inputTitle="Logo" resourceName="logo" sizeImage={sizeImage}  onResults={this._respInput} value={this.state.objectToSave.logo}/>
-        <InputArrayImages id="mainLogo" inputTitle="Logo" resourceName="mainLogo" sizeImage={sizeImageBig}  onResults={this._respInput} value={this.state.objectToSave.mainLogo}/>
+        <InputArrayImages id="mainLogo" inputTitle="Poster" resourceName="mainLogo" sizeImage={sizeImageBig}  onResults={this._respInput} value={this.state.objectToSave.mainLogo}/>
       </div>
     )
   }

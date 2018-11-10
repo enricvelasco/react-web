@@ -15,11 +15,11 @@ export class ProfileContent extends Component{
           <img className="is-rounded" src={this.props.userParams.userDomain.logo[0].url}/>
         </figure>
         <div className="align-left">
-          <h3>{this.props.userParams.name}</h3>
-          <p className="subtitle">{this.props.userParams.code}</p>
-          <p className="subtitle is-6">{this.props.userParams.email}</p>
-          <p className="subtitle is-6">{this.props.userParams.userDomain.name}</p>
-          <p className="subtitle is-6">{this.props.userParams.userDomain.direction.street}, {this.props.userParams.userDomain.direction.number}</p>
+          <h3 className="text-box-profile">{this.props.userParams.name}</h3>
+          <p className="sub.title text-box-profile">{this.props.userParams.code}</p>
+          <p className="subtitle is-6 text-box-profile">{this.props.userParams.email}</p>
+          <p className="subtitle is-6 text-box-profile">{this.props.userParams.userDomain.name}</p>
+          <p className="subtitle is-6 text-box-profile">{this.props.userParams.userDomain.direction.street}, {this.props.userParams.userDomain.direction.number}</p>
         </div>
       </div>
     )

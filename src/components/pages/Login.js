@@ -97,6 +97,31 @@ export class Login extends Component{
     });
   }
 
+  _storeParams(url, key){
+    console.log("CARGAR STORE PARAMS - 1", url, key);
+    firestore.collection(url).doc(key).get()
+    .then((doc)=>{
+      console.log("CARGAR STORE PARAMS");
+      if(doc.exists){
+        var localParams = doc.data()
+        localParams.id = doc.id
+
+        this.appState.commerce = localParams
+        this._returnAppState()
+      }
+    })
+    .catch((error)=>{
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      this.state.isLogged = false;
+      this.setState({
+        loading:false
+      })
+      this.appState.notification={type:6,message:"Error add data"}
+      this._returnAppState()
+    })
+  }
+
   _getUserParams=(idUser)=>{
     firestore.collection("userParams").doc(idUser).get()
     .then((querySnapshot) => {
@@ -106,14 +131,29 @@ export class Login extends Component{
       userParams = querySnapshot.data()
       userParams.id = idUser
       this.state.userParams = userParams
-      this.setState({
+
+      /*this.setState({
         loginTemplate:this._mountLoadingTemplate(),
         loading:false
-      })
+      })*/
 
       this.appState.userParams=userParams
       this.appState.notification={type:4,message:"Login Success"}
-      this._returnAppState()
+
+      if(userParams.idStore === undefined && userParams.idAssociation !== undefined){
+        this._storeParams("association", userParams.idAssociation)
+      }else if(userParams.idStore !== undefined && userParams.idAssociation !== undefined){
+        this._storeParams("stores", userParams.idStore)
+      }else{
+        this.setState({
+          loginTemplate:this._mountLoadingTemplate(),
+          loading:false
+        })
+        this._returnAppState()
+      }
+
+
+      //this._returnAppState()
       //Notification.success("Login correct")
       //NotificationManager.info('Info message');
 
