@@ -53,17 +53,7 @@ export class StorePage extends Component {
 
   componentDidMount(){
     console.log("COMPONENT DID MOUNT", this.props);
-    document.body.style.backgroundColor = this.props.appState.commerce.backgroudColor
-    document.getElementById("boxMenuLateral").style.backgroundColor = this.props.appState.commerce.menuColor
-    document.getElementById("boxProfileContent").style.backgroundColor = this.props.appState.commerce.profileColor
-    document.getElementById("contentBox").style.backgroundColor = this.props.appState.commerce.contentBoxColor
-    //document.getElementsByClassName("text-box-profile").style.color =  this.props.appState.commerce.fontProfileMenuColor
-
-    var x = document.getElementsByClassName("text-box-profile");
-    var i;
-    for (i = 0; i < x.length; i++) {
-        x[i].style.color = this.props.appState.commerce.fontProfileMenuColor
-    }
+    this._loadColors()
   }
 
 
@@ -83,7 +73,7 @@ export class StorePage extends Component {
                 </div>
               </div>
               <div className="column">
-                <div id="contentBox" className="box">
+                <div id="contentBox" className="box text-central-box">
                   {this.state.content}
                 </div>
               </div>
@@ -91,5 +81,34 @@ export class StorePage extends Component {
         </div>
       </div>
     )
+  }
+
+  _loadColors=()=>{
+    if(this.props.appState.commerce.backgroudColor !== undefined){
+      document.body.style.backgroundColor = this.props.appState.commerce.backgroudColor
+    }
+    if(this.props.appState.commerce.menuColor !== undefined){
+      document.getElementById("boxMenuLateral").style.backgroundColor = this.props.appState.commerce.menuColor
+    }
+    if(this.props.appState.commerce.profileColor !== undefined){
+      document.getElementById("boxProfileContent").style.backgroundColor = this.props.appState.commerce.profileColor
+    }
+    if(this.props.appState.commerce.contentBoxColor !== undefined){
+      document.getElementById("contentBox").style.backgroundColor = this.props.appState.commerce.contentBoxColor
+    }
+    if(this.props.appState.commerce.fontProfileMenuColor !== undefined){
+      for (let i = 0; i < document.getElementsByClassName("text-box-profile").length; i++) {
+          document.getElementsByClassName("text-box-profile")[i].style.color = this.props.appState.commerce.fontProfileMenuColor
+      }
+    }
+    if(this.props.appState.commerce.fontMenuColor !== undefined){
+      for (let i = 0; i < document.getElementsByClassName("text-lateral-menu").length; i++) {
+          document.getElementsByClassName("text-lateral-menu")[i].style.color = this.props.appState.commerce.fontMenuColor
+      }    }
+    if(this.props.appState.commerce.fontContentBox !== undefined){
+      for (let i = 0; i < document.getElementsByClassName("text-central-box").length; i++) {
+          document.getElementsByClassName("text-central-box")[i].style.color = this.props.appState.commerce.fontContentBox
+      }
+    }
   }
 }
