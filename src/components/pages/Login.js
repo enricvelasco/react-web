@@ -191,10 +191,10 @@ export class Login extends Component{
                 <p className="title">Access</p>
                 <ul>
                   <li>
-                    <InputText onResults={this._returnResourceValue} inputTitle="Username" resourceName="userName" /*value="prueba@prueba.com"*//>
+                    <InputText onResults={this._returnResourceValue} inputTitle="Username" resourceName="userName" value = {null}/>
                   </li>
                   <li>
-                    <InputPassword onResults={this._returnResourceValue} inputTitle="Password" resourceName="password" /*value="prueba"*//>
+                    <InputPassword onResults={this._returnResourceValue} inputTitle="Password" resourceName="password"/>
                   </li>
                 </ul>
                 <div className="field">

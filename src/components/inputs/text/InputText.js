@@ -10,10 +10,10 @@ export class InputText extends Component{
     this.inputTitle = props.inputTitle
     this.errorState = false
 
-    if(this.props.value != null){
+    if(this.props.value != null || this.props.value !== undefined){
       this.value = this.props.value
       var retErr
-      if(this.isRequired && (this.value==null || this.value=="")){
+      if(this.isRequired && (this.value==null || this.value==="")){
         retErr = true
       }else{
         retErr = false
@@ -29,7 +29,7 @@ export class InputText extends Component{
     this.value = e.target.value
     var retErr
 
-    if(this.isRequired && (this.value==null || this.value=="")){
+    if(this.isRequired && (this.value==null || this.value==="")){
       retErr = true
     }else{
       retErr = false
@@ -41,7 +41,7 @@ export class InputText extends Component{
 
   render(){
     var inputTextElement;
-    if(this.isRequired && (this.value==null || this.value=="")){
+    if(this.isRequired && (this.value==null || this.value==="")){
       this.errorState = true
       inputTextElement = <div className="padding-input">
                           <ul className="list-without-marks">
@@ -81,7 +81,7 @@ export class InputText extends Component{
     this.isRequired = nextProps.required
     this.inputTitle = nextProps.inputTitle
     this.errorState = false
-    if(nextProps.value == undefined){
+    if(nextProps.value === undefined){
       this.value = ""
     }else{
       this.value = nextProps.value

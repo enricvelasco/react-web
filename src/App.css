@@ -58,6 +58,11 @@
   width: 432px;
 }
 
+.image-principal{
+  width: 100%;
+  height: 24em;
+}
+
 .with-max-notification{
   width: 100%;
   margin-left: 0.5em;
@@ -156,4 +161,14 @@
 
 .text-central-box{
   color: black;
+}
+
+.text-title-principal-page{
+  color: #fab018;
+  font-size: 5em;
+}
+
+.image-logo-principal{
+  height: 10em;
+  width: 10em;
 }

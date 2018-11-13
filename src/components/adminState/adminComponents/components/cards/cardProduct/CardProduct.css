@@ -1,0 +1,18 @@
+.card-class{
+  width: 25%;
+  border-radius: 25px;
+  padding-top: 0px !important;
+  margin-top: 1em !important;
+  margin-left: 0.20em;
+}
+.image-card-class{
+  width: 100%;
+  border-top-right-radius:  25px;
+  border-top-left-radius:  25px;
+}
+
+@media screen and (max-width: 770px) {
+  .card-class {
+    width: 100%;
+  }
+}

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 //import './App.scss';
 import './App.css';
+import 'w3-css/w3.css';
 import 'bulma/css/bulma.css'
 import 'react-color-picker/index.css'
 
@@ -16,6 +17,12 @@ import {AdminPage} from "./components/adminState/adminComponents/pages/AdminPage
 import {StorePage} from "./components/adminState/adminComponents/pages/StorePage"
 import {AssociationPage} from "./components/adminState/adminComponents/pages/AssociationPage"
 import {ClientPage} from "./components/clientState/clientComponents/pages/ClientPage"
+import {ImageBackground} from "./components/adminState/adminComponents/components/ImageBackground"
+import {NavBarAdmin} from "./components/adminState/adminComponents/components/NavBarAdmin"
+import {StartPage} from "./components/adminState/adminComponents/components/startPage/StartPage"
+import {Footer} from "./components/adminState/adminComponents/components/Footer"
+
+
 
 
 //import { FirebaseConfig } from "../config/keys";
@@ -63,7 +70,28 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+
           {this.state.notification != null?
+            <Notification onCloseNotification={this._updateAppState}
+                          appState={this.state}
+                          type={this.state.notification.type}
+                          message={this.state.notification.message}
+                          />
+            :
+            <div></div>
+          }
+          {this.state.userParams == null?
+            <div>
+              <NavBarAdmin onResults={this._updateAppState} appState={this.state} showLogin = {true}/>
+              <ImageBackground/>
+              <StartPage/>
+            </div>
+            :
+            this._loadFormWithUserParams()
+          }
+          <Footer/>
+
+          {/*{this.state.notification != null?
             <Notification onCloseNotification={this._updateAppState} appState={this.state} type={this.state.notification.type} message={this.state.notification.message}/>
             :
             <div></div>
@@ -72,7 +100,7 @@ class App extends Component {
             <PrincipalPage onResults={this._updateAppState} appState={this.state}/>
             :
             this._loadFormWithUserParams()
-          }
+          }*/}
       </div>
     );
   }
