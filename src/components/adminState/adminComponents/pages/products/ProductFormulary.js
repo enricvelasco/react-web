@@ -18,6 +18,7 @@ import db from '../../../../../firebase'
 
 const sizeImage = {width:128, height:128}
 const sizeImagePoster = {width:375, height:667}
+const sizeImageVertical = {width:350, height:437}
 
 export class ProductFormulary extends Component{
 
@@ -34,7 +35,11 @@ export class ProductFormulary extends Component{
       this.firstTime = true
       this.state.objectToSave={
         logo:[],
-        productCategories:[]
+        productCategories:[],
+        verticalImage:[],
+        poster:[],
+        showInHome:false,
+        showInApp:false
       }
 
       if(this.props.defaultValues !== undefined){
@@ -126,8 +131,11 @@ export class ProductFormulary extends Component{
           {showStore}
           <InputText id="code" inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
           <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
+          <Checkbox inputTitle="Mostrar en la Home Web" resourceName="showInHome" onResults={this._respInput} value={this.state.objectToSave.showInHome}/>
+          <Checkbox inputTitle="Mostrar en la App" resourceName="showInApp" onResults={this._respInput} value={this.state.objectToSave.showInApp}/>
 
           <InputArrayImages id="logo" inputTitle="Fotos" resourceName="logo" sizeImage={sizeImage}  onResults={this._respInput} value={this.state.objectToSave.logo}/>
+          <InputArrayImages id="verticalImage" inputTitle="Imagen Vertical" resourceName="verticalImage" sizeImage={sizeImageVertical}  onResults={this._respInput} value={this.state.objectToSave.verticalImage}/>
           <InputArrayImages id="poster" inputTitle="Cartel App" resourceName="poster" sizeImage={sizeImagePoster}  onResults={this._respInput} value={this.state.objectToSave.poster}/>
         </div>
       )

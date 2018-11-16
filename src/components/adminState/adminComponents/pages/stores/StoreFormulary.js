@@ -18,6 +18,7 @@ import db from '../../../../../firebase'
 
 const sizeImage = {width:400, height:400}
 const sizeImageBig = {width:1024, height:280}
+const sizeImageVertical = {width:350, height:437}
 export class StoreFormulary extends Component{
 
   constructor(props){
@@ -33,7 +34,11 @@ export class StoreFormulary extends Component{
       this.firstTime = true
       this.state.objectToSave={
         logo:[],
-        storeCategories:[]
+        storeCategories:[],
+        verticalImage:[],
+        poster:[],
+        showInHome:false,
+        showInApp:false
       }
 
       if(this.props.defaultValues !== undefined){
@@ -128,7 +133,8 @@ export class StoreFormulary extends Component{
           {showAsoc}
           <InputText id="code" inputTitle="Código" resourceName="code" required={true} onResults={this._respInput} value={this.state.objectToSave.code}/>
           <InputText id="name" inputTitle="Nombre" resourceName="name" required={true} onResults={this._respInput} value={this.state.objectToSave.name}/>
-
+          <Checkbox inputTitle="Mostrar en la Home Web" resourceName="showInHome" onResults={this._respInput} value={this.state.objectToSave.showInHome}/>
+          <Checkbox inputTitle="Mostrar en la App" resourceName="showInApp" onResults={this._respInput} value={this.state.objectToSave.showInApp}/>
         </div>
       )
 
@@ -150,6 +156,7 @@ export class StoreFormulary extends Component{
 
 
         <InputArrayImages id="logo" inputTitle="Logo" resourceName="logo" sizeImage={sizeImage}  onResults={this._respInput} value={this.state.objectToSave.logo}/>
+        <InputArrayImages id="verticalImage" inputTitle="Imagen Vertical" resourceName="verticalImage" sizeImage={sizeImageVertical}  onResults={this._respInput} value={this.state.objectToSave.verticalImage}/>
         <InputArrayImages id="mainLogo" inputTitle="Poster" resourceName="mainLogo" sizeImage={sizeImageBig}  onResults={this._respInput} value={this.state.objectToSave.mainLogo}/>
       </div>
     )
@@ -158,6 +165,7 @@ export class StoreFormulary extends Component{
   _paramsSection2=()=>{
     return(
       <div>
+        <InputText id="phoneNumber" inputTitle="Telefono" resourceName="phoneNumber" required={true} onResults={this._respInput} value={this.state.objectToSave.phoneNumber}/>
         <Direction id="direction" resourceName="direction" onResults={this._respInput} value={this.state.objectToSave.direction}/>
         <SimpleMap/>
       </div>
@@ -167,7 +175,7 @@ export class StoreFormulary extends Component{
   _paramsSection3=()=>{
     return(
       <div>
-      <Categories inputTitle="Categorías de Tiendas" resourceName="storeCategories" showFields={["code", "name"]} url={"storeCategories"} onResults={this._respInput} value={this.state.objectToSave.storeCategories}/>
+        <Categories inputTitle="Categorías de Tiendas" resourceName="storeCategories" showFields={["code", "name"]} url={"storeCategories"} onResults={this._respInput} value={this.state.objectToSave.storeCategories}/>
       </div>
     )
   }

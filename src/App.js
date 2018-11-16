@@ -90,7 +90,6 @@ class App extends Component {
             this._loadFormWithUserParams()
           }
           <Footer/>
-
           {/*{this.state.notification != null?
             <Notification onCloseNotification={this._updateAppState} appState={this.state} type={this.state.notification.type} message={this.state.notification.message}/>
             :

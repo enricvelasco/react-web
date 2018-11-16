@@ -35,7 +35,13 @@ service cloud.firestore {
       allow read, write: if request.auth.uid != null;
     }
     match /productsPublic/{doc} {
-      allow read, write;
+      allow read;
+    }
+    match /associationPublic/{doc} {
+      allow read;
+    }
+    match /storesPublic/{doc} {
+      allow read;
     }
 
   }

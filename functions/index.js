@@ -19,25 +19,17 @@ exports.createStorePublic = functions.firestore
     .document('stores/{storeId}')//params: { associationId: 'bgQF9MYa1jmhsU7pv62l' }
     .onCreate((snap, context) => {
       const db = admin.firestore();
-      console.log("ENTRADA DATOS", context.params.storeId);
-      /*console.log("ENTRADA DATOS 1", context.params);
-      console.log("ENTRADA DATOS 2", snap.params);*/
-
       db.collection("stores").doc(context.params.storeId).get().then((docStore) => {
-
-        //docStore.data().id = docStore.id //le asigna el id al objeto
-        console.log("TIENDA ENCONTRADA", docStore.data());
-        //crear la tienda publica
-        console.log("PROCEDE A CREAR TIENDA PÚBLICA");
         db.collection("storesPublic").doc(context.params.storeId).set({
           id:docStore.id,
           code:docStore.data().code,
           name:docStore.data().name,
-          logo:docStore.data().logo
+          logo:docStore.data().logo,
+          verticalImage:docStore.data().verticalImage,
+          showInHome:docStore.data().showInHome,
+          showInApp:docStore.data().showInApp
         })
         .then(() => {
-            console.log("TIENDA PUBLICA CREADA");
-            console.log("PROCEDE A ASIGNAR TIENDA A LA ASOCIACIÓN CORRESPONDIENTE", docStore.data());
             db.collection("association").doc(docStore.data().association.id).get().then((docAssoc) => {
               var asoc = docAssoc.data()
               asoc.id = docAssoc.id
@@ -45,9 +37,6 @@ exports.createStorePublic = functions.firestore
               storeWithoutAsoc.id = docStore.id
               delete storeWithoutAsoc.association
               asoc.stores.push(storeWithoutAsoc)
-
-              console.log("ANTES DE ACTUALIZAR LA ASOC", asoc);
-              console.log("ANTES DE ACTUALIZAR LA ASOC --- STORE", storeWithoutAsoc);
               db.collection("association").doc(asoc.id).update(asoc)
               .then((ret) => {
                   console.log("ASOCIACION ACTUALIZADA OK", ret);
@@ -60,8 +49,6 @@ exports.createStorePublic = functions.firestore
         .catch(function(error) {
             console.error("ERROR AL CREAR TIENDA PUBLICA", error);
         });
-        //asignar la tienda a la asociacion correspondiente
-
       })
     }
   );
@@ -73,11 +60,13 @@ exports.updateStoresPublic = functions.firestore
       var objPublic = {
         code: change.after.data().code,
         name: change.after.data().name,
-        logo: change.after.data().logo
+        logo: change.after.data().logo,
+        verticalImage:change.after.data().verticalImage,
+        showInHome:change.after.data().showInHome,
+        showInApp:change.after.data().showInApp
       }
       db.collection("storesPublic").doc(context.params.storeId).update(objPublic)
       .then((ret) => {
-          console.log("UPDATED OK", ret);
           db.collection("association").doc(change.after.data().association.id).get().then((docAssoc) => {
             var asoc = docAssoc.data()
             asoc.id = docAssoc.id
@@ -101,21 +90,6 @@ exports.updateStoresPublic = functions.firestore
                 console.error("ERROR AL ACTUALIZAR ASOCIACION", error);
             });
           })
-          /*db.collection("products").doc(change.after.data().store.id).get().then((docProd) => {
-            var prod = docProd.data()
-            prod.id = docProd.id
-            let storeWithoutAsoc = change.after.data()
-            storeWithoutAsoc.id = context.params.storeId
-            prod.store = storeWithoutAsoc
-            db.collection("association").doc(prod.id).update(prod)
-            .then((ret) => {
-                console.log("ASOCIACION ACTUALIZADA OK", ret);
-            })
-            .catch(function(error) {
-                console.error("ERROR AL ACTUALIZAR ASOCIACION", error);
-            });
-          })*/
-
       })
       .catch(function(error) {
           console.error("ERROR AL ACTUALIZAR", error);
@@ -173,15 +147,12 @@ exports.createProductPublic = functions.firestore
         var objPublic = {
           id: doc.id,
           code: doc.data().code,
-          name: doc.data().name/*,
-          logo: doc.data().logo,
-          poster: doc.data().poster*/
-        }
-        if(doc.data().logo !== undefined){
-          objPublic.logo = doc.data().logo
-        }
-        if(doc.data().poster !== undefined){
-          objPublic.poster = doc.data().poster
+          name: doc.data().name,
+          logo:doc.data().logo,
+          verticalImage:doc.data().verticalImage,
+          poster:doc.data().poster,
+          showInHome:doc.data().showInHome,
+          showInApp:doc.data().showInApp
         }
 
         db.collection("productsPublic").doc(context.params.productId).set(objPublic)
@@ -203,15 +174,12 @@ exports.updateProductPublic = functions.firestore
       const db = admin.firestore();
       var objPublic = {
         code: change.after.data().code,
-        name: change.after.data().name/*,
-        logo: doc.data().logo,
-        poster: doc.data().poster*/
-      }
-      if(change.after.data().logo !== undefined){
-        objPublic.logo = change.after.data().logo
-      }
-      if(change.after.data().poster !== undefined){
-        objPublic.poster = change.after.data().poster
+        name: change.after.data().name,
+        logo:change.after.data().logo,
+        verticalImage:change.after.data().verticalImage,
+        poster:change.after.data().poster,
+        showInHome:change.after.data().showInHome,
+        showInApp:change.after.data().showInApp
       }
       db.collection("productsPublic").doc(context.params.productId).update(objPublic)
       .then((ret) => {
@@ -246,7 +214,10 @@ exports.createAssociationPublic = functions.firestore
           id: doc.id,
           code: doc.data().code,
           name: doc.data().name,
-          logo: doc.data().logo
+          logo: doc.data().logo,
+          verticalImage:doc.data().verticalImage,
+          showInHome:doc.data().showInHome,
+          showInApp:doc.data().showInApp
         }
         db.collection("associationPublic").doc(context.params.associationId).set(objPublic)
         .then(() => {
@@ -268,7 +239,10 @@ exports.updateAssociationPublic = functions.firestore
       var objPublic = {
         code: change.after.data().code,
         name: change.after.data().name,
-        logo: change.after.data().logo
+        logo: change.after.data().logo,
+        verticalImage:change.after.data().verticalImage,
+        showInHome:change.after.data().showInHome,
+        showInApp:change.after.data().showInApp
       }
       db.collection("associationPublic").doc(context.params.associationId).update(objPublic)
       .then((ret) => {

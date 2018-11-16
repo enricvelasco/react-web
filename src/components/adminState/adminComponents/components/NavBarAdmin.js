@@ -4,6 +4,8 @@ import {InputText} from '../../../inputs/text/InputText'
 import {InputPassword} from '../../../inputs/text/InputPassword'
 import {Login} from '../../../pages/Login'
 
+import firebase from 'firebase'
+
 export class NavBarAdmin extends Component{
   /*_selectItemMenu=(e, url)=>{
     console.log("SELECCIONA MENU", url);
@@ -15,11 +17,30 @@ export class NavBarAdmin extends Component{
     this.appState = this.props.appState
   }
 
+  _returnAppState=()=>{
+    this.props.onAppStateReturn(this.appState)
+  }
+
   _logInClicked=()=>{
     console.log("CLICK EN LOGIN ABRIR MODAL");
     this.setState({
       openModal:true
     })
+  }
+
+  _logOutClicked=()=>{
+    console.log("CLICK EN LOGOUT");
+    firebase.auth().signOut()
+    .then(()=>{
+      // Sign-out successful.
+      this.state.isLogged = false
+      console.log("LOGOUT OK");
+    })
+    .catch((error)=>{
+      console.log("LOGOUT ERROR", error);
+      //this._returnAppState()
+      // An error happened
+    });
   }
 
   _closeModal=()=>{
@@ -37,16 +58,6 @@ export class NavBarAdmin extends Component{
   render(){
     console.log("RENDER");
     var modalElement
-    /*if(this.state.openModal){
-      modalElement = (
-        <div>
-        <button onClick={this.onOpenModal}>Open modal</button>
-        <Modal open={open} onClose={this.onCloseModal} center>
-          <h2>Simple centered modal</h2>
-        </Modal>
-      </div>
-    )
-  }*/
     return(
       <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
@@ -60,64 +71,23 @@ export class NavBarAdmin extends Component{
             <span aria-hidden="true"></span>
           </a>
         </div>
-
-        {/*<div id="navbarBasicExample" className="navbar-menu">
-          <div className="navbar-start">
-            <a clclassNameass="navbar-item">
-              Home
-            </a>
-
-            <a className="navbar-item">
-              Documentation
-            </a>
-
-            <div className="navbar-item has-dropdown is-hoverable">
-              <a className="navbar-link">
-                More
-              </a>
-
-              <div className="navbar-dropdown">
-                <a className="navbar-item">
-                  About
-                </a>
-                <a className="navbar-item">
-                  Jobs
-                </a>
-                <a className="navbar-item">
-                  Contact
-                </a>
-                <hr className="navbar-divider"/>
-                <a className="navbar-item">
-                  Report an issue
-                </a>
-              </div>
-            </div>
-          </div>*/}
-
           <div className="navbar-end">
-
+          <div className="navbar-item">
+            <div className="buttons">
             {this.props.showLogin?
-                <div className="navbar-item">
-                  <div className="buttons">
+
                     <a className="button is-light" onClick={((e) => this._logInClicked(e))}>
                       Log In
                     </a>
-                  </div>
-                </div>
+
               :
-              <div className="navbar-item">
-                <div className="buttons">
-                  <a className="button is-light">
-                    Log Out
-                  </a>
-                </div>
-              </div>
+                  <a className="button is-light" onClick={((e) => this._logOutClicked(e))}>
+                      Log Out
+                    </a>
             }
-
-
+            </div>
           </div>
-
-
+          </div>
             <Modal open={this.state.openModal} onClose={this._closeModal} center>
               <Login onAppStateReturn={this._appStateReturn} appState={this.appState}/>
             </Modal>
