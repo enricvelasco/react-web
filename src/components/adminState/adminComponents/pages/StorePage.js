@@ -61,7 +61,7 @@ export class StorePage extends Component {
     console.log("--------------RENDER");
     return(
       <div>
-        <NavBarAdmin/>
+        {/*<NavBarAdmin/>*/}
         <div className="content content-margin">
             <div className="columns">
               <div className="column is-one-quarter">

@@ -18,7 +18,7 @@ export class NavBarAdmin extends Component{
   }
 
   _returnAppState=()=>{
-    this.props.onAppStateReturn(this.appState)
+    this.props.onResults(this.appState)
   }
 
   _logInClicked=()=>{
@@ -29,11 +29,14 @@ export class NavBarAdmin extends Component{
   }
 
   _logOutClicked=()=>{
-    console.log("CLICK EN LOGOUT");
+    console.log("CLICK EN LOGOUT", this.appState);
     firebase.auth().signOut()
     .then(()=>{
       // Sign-out successful.
       this.state.isLogged = false
+      this.appState.userParams = null
+      this.appState.notification.message="LogOut Success"
+      this._returnAppState()
       console.log("LOGOUT OK");
     })
     .catch((error)=>{

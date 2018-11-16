@@ -140,7 +140,8 @@ export class Login extends Component{
       this.appState.userParams=userParams
       this.appState.notification={type:4,message:"Login Success"}
 
-      if(userParams.idStore === undefined && userParams.idAssociation !== undefined){
+      if(userParams.idStore === null && userParams.idAssociation !== undefined){
+        console.log("ES_UNA_ASOCIACION", userParams);
         this._storeParams("association", userParams.idAssociation)
       }else if(userParams.idStore !== undefined && userParams.idAssociation !== undefined){
         this._storeParams("stores", userParams.idStore)

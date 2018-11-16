@@ -69,7 +69,7 @@ export class AssociationPage extends Component {
   render(){
     return(
       <div>
-        <NavBarAdmin/>
+        {/*<NavBarAdmin/>*/}
         <div className="content content-margin">
             <div className="columns">
               <div className="column is-one-quarter">

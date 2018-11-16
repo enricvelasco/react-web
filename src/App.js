@@ -45,6 +45,7 @@ class App extends Component {
   }
 
   _updateAppState=(stateUpdated)=>{
+    console.log("ACTUALIZA_NAV_BAR");
     this.setState(stateUpdated)
   }
 
@@ -80,9 +81,10 @@ class App extends Component {
             :
             <div></div>
           }
+          <NavBarAdmin onResults={this._updateAppState} appState={this.state} showLogin = {this.state.userParams==null?true:false}/>
           {this.state.userParams == null?
             <div>
-              <NavBarAdmin onResults={this._updateAppState} appState={this.state} showLogin = {true}/>
+
               <ImageBackground/>
               <StartPage/>
             </div>
