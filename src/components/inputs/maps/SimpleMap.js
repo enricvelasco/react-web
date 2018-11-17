@@ -19,8 +19,17 @@ export class SimpleMap extends Component {
     >
   </Marker>*/
 
-  _solicitarResultados=()=>{
-      fetch('https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyDFa7RY03_NVSV-VDs6dIFafo8Tr7yH9fM')
+  _solicitarResultados=(address)=>{
+      let streetNumber= address.number
+      let route= address.street
+      let city=address.city
+      let postalCode =address.postalCode
+      let country = address.country
+
+      let formatedAddress = streetNumber + route+ ', ' +city+' '+postalCode+', '+country
+
+      //fetch('https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyDFa7RY03_NVSV-VDs6dIFafo8Tr7yH9fM')
+      fetch('https://maps.googleapis.com/maps/api/geocode/json?formatted_address='+ formatedAddress +'=AIzaSyDFa7RY03_NVSV-VDs6dIFafo8Tr7yH9fM')
       .then(
         function(response) {
           if (response.status !== 200) {
