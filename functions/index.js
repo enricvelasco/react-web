@@ -1,6 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-//const fetch = require("node-fetch");
+const fetch = require("node-fetch");
 /*const Firestore = require('@google-cloud/firestore');
 const firestore = new Firestore();*/
 
@@ -15,7 +15,7 @@ const apiMaps = "AIzaSyDFa7RY03_NVSV-VDs6dIFafo8Tr7yH9fM"
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //  response.send("Hello from Firebase!");
 // });
-const generateLatAndLongFromDirection = (address) => {
+/*const generateLatAndLongFromDirection = (address) => {
   return new Promise((resolve, reject) => {
     let streetNumber= address.number
     let route= address.street
@@ -23,7 +23,7 @@ const generateLatAndLongFromDirection = (address) => {
     let postalCode =address.postalCode
     let country = address.country
     let formatedAddress = streetNumber + route+ ', ' +city+' '+postalCode+', '+country
-      fetch('https://maps.googleapis.com/maps/api/geocode/json?address='+ formatedAddress +'&key='+apiMaps)
+      fetch('https://maps.googleapis.com/maps/api/geocode/json?formatted_address='+ formatedAddress +'&key='+apiMaps)
       .then(
         function(response) {
           if (response.status !== 200) {
@@ -45,7 +45,42 @@ const generateLatAndLongFromDirection = (address) => {
         resolve(null)
       });
   });
-};
+};*/
+
+var functRetCoo = function(address){
+  let promise = new Promise((resolve, reject)=>{
+    let streetNumber= address.number
+    let route= address.street
+    let city=address.city
+    let postalCode =address.postalCode
+    let country = address.country
+    let formatedAddress = streetNumber + route+ ', ' +city+' '+postalCode+', '+country
+      fetch('https://maps.googleapis.com/maps/api/geocode/json?formatted_address='+ formatedAddress +'&key='+apiMaps)
+      .then(
+        function(response) {
+          if (response.status !== 200) {
+            console.log('Looks like there was a problem. Status Code: ' +
+              response.status);
+            //return;
+            resolve(null)
+          }
+          console.log("DEBERIA SER NORMAL", response);
+          resolve("hola")
+
+          // Examine the text in the response
+          /*response.json().then(function(data) {
+            console.log("****",data.results[0].geometry.location);
+            resolve(data.results[0].geometry.location)
+            //return
+          });*/
+        }
+      )
+      .catch(function(err) {
+        resolve(null)
+      });
+  })
+  return promise
+}
 
 //TIENDAS***************************************
 exports.createStorePublic = functions.firestore
@@ -92,10 +127,59 @@ exports.updateStoresPublic = functions.firestore
       const db = admin.firestore();
 
       if(change.after.data().direction !== undefined){
-        generateLatAndLongFromDirection(change.after.data().direction).then(coordinates => {
-          change.after.data().direction.lat = coordinates.lat
-          change.after.data().direction.long = coordinates.long
-          var objPublic = {
+        functRetCoo(change.after.data().direction).then(function(resp){
+            console.log("RESPUESTA ASYNC", resp);
+            change.after.data().direction.coordinates = resp
+            var objPublic = {
+              code: change.after.data().code,
+              name: change.after.data().name,
+              logo: change.after.data().logo,
+              verticalImage:change.after.data().verticalImage,
+              showInHome:change.after.data().showInHome,
+              showInApp:change.after.data().showInApp,
+              direction:change.after.data().direction
+            }
+            db.collection("stores").doc(context.params.storeId).update({direction:change.after.data().direction})
+            db.collection("storesPublic").doc(context.params.storeId).update(objPublic)
+            .then((ret) => {
+                db.collection("association").doc(change.after.data().association.id).get().then((docAssoc) => {
+                  var asoc = docAssoc.data()
+                  asoc.id = docAssoc.id
+                  let storeWithoutAsoc = change.after.data()
+                  storeWithoutAsoc.id = context.params.storeId
+                  delete storeWithoutAsoc.association
+                  var arrStores = []
+                  asoc.stores.forEach((val)=>{
+                    if(val.id === storeWithoutAsoc.id){
+                      arrStores.push(storeWithoutAsoc)
+                    }else{
+                      arrStores.push(val)
+                    }
+                  })
+                  asoc.stores = arrStores
+                  db.collection("association").doc(asoc.id).update(asoc)
+                  .then((ret) => {
+                      console.log("ASOCIACION ACTUALIZADA OK", ret);
+                  })
+                  .catch(function(error) {
+                      console.error("ERROR AL ACTUALIZAR ASOCIACION", error);
+                  });
+                })
+            })
+            .catch(function(error) {
+                console.error("ERROR AL ACTUALIZAR", error);
+            });
+          },
+          function(err){
+
+          }
+        )
+        //generateLatAndLongFromDirection(change.after.data().direction).then(coordinates => {
+          //console.log("RESPUESTA->",coordinates);
+          //change.after.data().direction.coordinates = functRetCoo(change.after.data().direction)
+          //change.after.data().direction.lat = coordinates.lat
+          //change.after.data().direction.long = coordinates.long
+          /*var objPublic = {
             code: change.after.data().code,
             name: change.after.data().name,
             logo: change.after.data().logo,
@@ -134,7 +218,7 @@ exports.updateStoresPublic = functions.firestore
           .catch(function(error) {
               console.error("ERROR AL ACTUALIZAR", error);
           });
-        });
+        //});*/
       }
 
 

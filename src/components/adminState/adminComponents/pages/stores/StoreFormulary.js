@@ -167,7 +167,7 @@ export class StoreFormulary extends Component{
       <div>
         <InputText id="phoneNumber" inputTitle="Telefono" resourceName="phoneNumber" required={true} onResults={this._respInput} value={this.state.objectToSave.phoneNumber}/>
         <Direction id="direction" resourceName="direction" onResults={this._respInput} value={this.state.objectToSave.direction}/>
-        <SimpleMap/>
+        {/*<SimpleMap/>*/}
       </div>
     )
   }
