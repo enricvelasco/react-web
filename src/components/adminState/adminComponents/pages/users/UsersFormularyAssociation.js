@@ -8,7 +8,6 @@ import {InputArrayImages} from '../../../../inputs/images/InputArrayImages'
 import {SubgroupList} from '../../../../inputs/grid/SubgroupList'
 import {LinkColumn} from '../../../../inputs/grid/componentsColumns/LinkColumn'
 import {Users} from "../users/Users"
-import {Direction} from '../../../../inputs/direction/Direction'
 
 import firebase from 'firebase';
 import db from '../../../../../firebase'

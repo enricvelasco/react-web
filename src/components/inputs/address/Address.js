@@ -66,7 +66,7 @@ const generateLatAndLongFromDirection = (address) => {
     }
   )*/
 
-export class Direction extends Component{
+export class Address extends Component{
   constructor(props){
     super(props)
 

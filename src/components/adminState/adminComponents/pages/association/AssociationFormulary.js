@@ -10,7 +10,7 @@ import {SubgroupList} from '../../../../inputs/grid/SubgroupList'
 import {LinkColumn} from '../../../../inputs/grid/componentsColumns/LinkColumn'
 import {Users} from "../users/Users"
 import {UsersFormularyAssociation} from "../users/UsersFormularyAssociation"
-import {Direction} from '../../../../inputs/direction/Direction'
+import {Address} from '../../../../inputs/address/Address'
 
 import firebase from 'firebase';
 import db from '../../../../../firebase'
@@ -37,7 +37,8 @@ export class AssociationFormulary extends Component{
         verticalImage:[],
         poster:[],
         showInHome:false,
-        showInApp:false
+        showInApp:false,
+        address:null
       }
 
       this.state.errorTree={
@@ -169,7 +170,7 @@ export class AssociationFormulary extends Component{
     return(
       <div>
         <InputText id="phoneNumber" inputTitle="Telefono" resourceName="phoneNumber" required={true} onResults={this._respInput} value={this.state.objectToSave.phoneNumber}/>
-        <Direction id="direction" resourceName="direction" onResults={this._respInput} value={this.state.objectToSave.direction}/>
+        <Address id="address" resourceName="address" onResults={this._respInput} value={this.state.objectToSave.address}/>
       </div>
     )
   }

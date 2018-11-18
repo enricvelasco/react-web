@@ -8,7 +8,6 @@ import {InputArrayImages} from '../../../../inputs/images/InputArrayImages'
 import {SubgroupList} from '../../../../inputs/grid/SubgroupList'
 import {LinkColumn} from '../../../../inputs/grid/componentsColumns/LinkColumn'
 
-import {Direction} from '../../../../inputs/direction/Direction'
 
 import firebase from 'firebase';
 import db from '../../../../../firebase'
@@ -108,21 +107,7 @@ export class StoreCategoriesFormulary extends Component{
       )
 
   }
-  _paramsSection1=()=>{
-    return(
-      <div>
-        <InputText id="domain2" inputTitle="Url Dominio" resourceName="domain" required={true} onResults={this._respInput} value={this.state.objectToSave.domain}/>
-      </div>
-    )
-  }
 
-  _paramsSection2=()=>{
-    return(
-      <div>
-        <Direction id="direction" resourceName="direction" onResults={this._respInput} value={this.state.objectToSave.direction}/>
-      </div>
-    )
-  }
 
   _loadArrayRadioButton=()=>{
     var arr = []
@@ -141,12 +126,6 @@ export class StoreCategoriesFormulary extends Component{
     switch (select) {
       case 0:
         this.setState({paramsMount:this._paramsSection0()})
-      break;
-      case 1:
-        this.setState({paramsMount:this._paramsSection1()})
-      break;
-      case 2:
-        this.setState({paramsMount:this._paramsSection2()})
       break;
       default:
       break;
