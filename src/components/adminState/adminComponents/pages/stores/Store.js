@@ -6,6 +6,40 @@ import {StoreFormulary} from "./StoreFormulary"
 import firebase from 'firebase';
 import db from '../../../../../firebase'
 
+
+const generateLatAndLongFromDirection = (address) => {
+  return new Promise((resolve, reject) => {
+    let streetNumber= address.number
+    let route= address.street
+    let city=address.city
+    let postalCode =address.postalCode
+    let country = address.country
+    let formatedAddress = streetNumber + route+ ', ' +city+' '+postalCode+', '+country
+      fetch('https://maps.googleapis.com/maps/api/geocode/json?address='+ formatedAddress +'&key=AIzaSyDFa7RY03_NVSV-VDs6dIFafo8Tr7yH9fM')
+      .then(
+        function(response) {
+          if (response.status !== 200) {
+            console.log('Looks like there was a problem. Status Code: ' +
+              response.status);
+            //return;
+            resolve("error")
+          }
+
+          // Examine the text in the response
+          response.json().then(function(data) {
+            console.log("****",data.results[0].geometry.location);
+            resolve(data.results[0].geometry.location)
+            //return
+          });
+        }
+      )
+      .catch(function(err) {
+        resolve("error")
+      });
+  });
+};
+
+
 export class Store extends Component{
   constructor(props){
     super(props)
@@ -50,14 +84,17 @@ export class Store extends Component{
 
     //eliminar parametros repetidos del padre
     delete object.association.stores
-
-    db.collection(this.props.urlMapping).add(object)
-    .then((docRef) => {
-        console.log("ASOCIACION AÑADIDA OK: ", docRef.id);
-        this.setState({stateMode:"list"})
-    })
-    .catch(function(error) {
-        console.error("ERROR AL AÑADIR", error);
+    generateLatAndLongFromDirection(object.address).then(resp => {
+      console.log("RETURN PROMISE", resp);
+      object.address.coordinates = resp
+      db.collection(this.props.urlMapping).add(object)
+      .then((docRef) => {
+          console.log("ASOCIACION AÑADIDA OK: ", docRef.id);
+          this.setState({stateMode:"list"})
+      })
+      .catch(function(error) {
+          console.error("ERROR AL AÑADIR", error);
+      });
     });
   }
 
@@ -66,18 +103,21 @@ export class Store extends Component{
     var user = firebase.auth().currentUser;
     object.userModification = user.uid
     object.dateModification = new Date()
-    db.collection(this.props.urlMapping).doc(this.idToEdit).update(object)
-    .then(() => {
-        console.log("UPDATED OK");
-        this.setState({stateMode:"list"})
+    generateLatAndLongFromDirection(object.address).then(resp => {
+      object.address.coordinates = resp
+      db.collection(this.props.urlMapping).doc(this.idToEdit).update(object)
+      .then(() => {
+          console.log("UPDATED OK");
+          this.setState({stateMode:"list"})
+      })
+      .catch(function(error) {
+          console.error("ERROR AL ACTUALIZAR", error);
+      });
     })
-    .catch(function(error) {
-        console.error("ERROR AL ACTUALIZAR", error);
-    });
-
   }
 
   _loadStateMode=()=>{
+    var formulary
     switch (this.state.stateMode) {
       case "list":
           return(<StoreList
@@ -91,25 +131,20 @@ export class Store extends Component{
                   showNewButton={this.props.showNewButton}
                   showDeleteButton={this.props.showDeleteButton}
                   />)
-        break;
       case "new":
-          var formulary
           //if(this.props.personalizedComponentFormulary == "association"){
           //  formulary=<UsersFormularyAssociation onCancel={this._onCancel} onSave={this._onSave} idAssociation={this.props.associationId}/>
           //}else{
             formulary=<StoreFormulary defaultValues={this.props.defaultValues} associationInputInvisible={this.props.associationInputInvisible} onCancel={this._onCancel} onSave={this._onSave}/>
           //}
           return formulary
-        break;
       case "edit":
-          var formulary
           //if(this.props.personalizedComponentFormulary == "association"){
           //  formulary = <UsersFormularyAssociation onCancel={this._onCancel} onSave={this._onSave} idAssociation={this.props.associationId}/>
           //}else{
             formulary =< StoreFormulary associationInputInvisible={this.props.associationInputInvisible} urlMapping={this.props.urlMapping} idUrl={this.idToEdit} onCancel={this._onCancel} onSave={this._onUpdate}/>
           //}
           return formulary
-        break;
       default:
 
     }

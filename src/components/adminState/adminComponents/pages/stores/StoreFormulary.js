@@ -38,8 +38,7 @@ export class StoreFormulary extends Component{
         verticalImage:[],
         poster:[],
         showInHome:false,
-        showInApp:false,
-        address:null
+        showInApp:false
       }
 
       if(this.props.defaultValues !== undefined){
