@@ -11,7 +11,6 @@ export class ProductList extends Component{
     super(props)
     this.state={loading:true}
     this._loadCollection()
-    //this._moutColumns(
   }
 
   componentWillUpdate(props,state){
@@ -22,7 +21,12 @@ export class ProductList extends Component{
   _moutColumns(){
     this.columns = [
       { key: 'codigoLink', name: 'Código', formatter: <LinkColumn nameLinkColumn="code" onResults={this._respuestaCampoLink}/>},
-      { key: 'name', name: 'Nombre'}];
+      { key: 'name', name: 'Nombre'}
+    ];
+
+    if(this.props.showStoreCol === undefined || this.props.showStoreCol){
+      this.columns.push({ key: 'storeName', name: 'Tienda'})
+    }
   }
 
   _respuestaCampoLink=(e)=>{
@@ -73,6 +77,7 @@ export class ProductList extends Component{
 						registro = doc.data()
             registro.id = doc.id
             registro.codigoLink = {id:registro.id, code:registro.code}
+            registro.storeName = registro.store.code + " - " + registro.store.name
             this.rows.push(registro)
 		    });
         this._moutColumns()

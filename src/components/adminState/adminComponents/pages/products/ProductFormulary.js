@@ -52,6 +52,14 @@ export class ProductFormulary extends Component{
       }
       this.state.loading=false
     }
+    this.state.errorTree = {
+      code:true,
+      name:true/*,
+      store:true*/
+    }
+    if(!this.props.storeInputInvisible){
+      this.state.errorTree.store = true
+    }
   }
 
   render(){

@@ -85,7 +85,14 @@ export class Address extends Component{
 
   _respInput = (res, val, err) =>{
     this.value[res]=val
-    this.props.onResults(this.props.resourceName, this.value, false)
+
+    let error = false
+    if((this.value.country===null || this.value.country==="")||(this.value.city===null || this.value.city==="")||(this.value.street===null || this.value.street==="")||
+        (this.value.number===null || this.value.number==="")||(this.value.postalCode===null || this.value.postalCode==="")){
+          error = true
+    }
+
+    this.props.onResults(this.props.resourceName, this.value, error)
   }
 
   _solicitarResultados=(address)=>{

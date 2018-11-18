@@ -52,6 +52,13 @@ export class StoreFormulary extends Component{
       }
       this.state.loading=false
     }
+    this.state.errorTree = {
+      code:true,
+      name:true,
+      domain:true,
+      phoneNumber:true,
+      address:true
+    }
   }
 
   render(){
@@ -239,7 +246,7 @@ export class StoreFormulary extends Component{
 
   _hasErrorInFormulary=()=>{
     var resp = false
-    console.log("ERROR TREEE", this.state.errorTree);
+    console.log("ERROR_TREEE", this.state.errorTree);
     Object.keys(this.state.errorTree).forEach((keyErr) =>{
       if(this.state.errorTree[keyErr]){
         resp = true
