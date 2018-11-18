@@ -5,6 +5,7 @@ import {Loading} from '../../../../states/Loading'
 import {Grid} from '../../../../inputs/grid/Grid'
 import {HeaderButtons} from '../../../../inputs/buttons/HeaderButtons'
 import {LinkColumn} from '../../../../inputs/grid/componentsColumns/LinkColumn'
+import {SonElementColumn} from '../../../../inputs/grid/componentsColumns/SonElementColumn'
 
 export class StoreList extends Component{
   constructor(props){
@@ -27,7 +28,11 @@ export class StoreList extends Component{
   _moutColumns(){
     this.columns = [
       { key: 'codigoLink', name: 'Código', formatter: <LinkColumn nameLinkColumn="code" onResults={this._respuestaCampoLink}/>},
-      { key: 'name', name: 'Nombre'}];
+      { key: 'name', name: 'Nombre'}
+    ];
+    if(this.props.showAssociationCol === undefined || this.props.showAssociationCol){
+      this.columns.push({ key: 'associationName', name: 'Asociación'})
+    }
   }
 
   _respuestaCampoLink=(e)=>{
@@ -78,6 +83,7 @@ export class StoreList extends Component{
 						registro = doc.data()
             registro.id = doc.id
             registro.codigoLink = {id:registro.id, code:registro.code}
+            registro.associationName = registro.association.name
             this.rows.push(registro)
 		    });
         this._moutColumns()
