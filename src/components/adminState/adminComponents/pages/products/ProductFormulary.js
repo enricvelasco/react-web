@@ -36,7 +36,6 @@ export class ProductFormulary extends Component{
         logo:[],
         productCategories:[],
         verticalImage:[],
-        poster:[],
         showInHome:false,
         showInApp:false
       }
@@ -143,7 +142,6 @@ export class ProductFormulary extends Component{
 
           <InputArrayImages id="logo" inputTitle="Fotos" resourceName="logo" sizeImage={sizeImage}  onResults={this._respInput} value={this.state.objectToSave.logo}/>
           <InputArrayImages id="verticalImage" inputTitle="Imagen Vertical" resourceName="verticalImage" sizeImage={sizeImageVertical}  onResults={this._respInput} value={this.state.objectToSave.verticalImage}/>
-          <InputArrayImages id="poster" inputTitle="Cartel App" resourceName="poster" sizeImage={sizeImagePoster}  onResults={this._respInput} value={this.state.objectToSave.poster}/>
         </div>
       )
 

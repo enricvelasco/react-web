@@ -92,6 +92,37 @@ exports.updateStoresPublic = functions.firestore
                 console.error("ERROR AL ACTUALIZAR ASOCIACION", error);
             });
           })
+          console.log("PRE UPDATE PRODUCT");
+          db.collection("products").where("store.id","==",context.params.storeId).get().then((querySnapshot) => {
+            querySnapshot.forEach(function(doc) {
+                // doc.data() is never undefined for query doc snapshots
+                console.log(doc.id, " => ", doc.data());
+                let prodUpdate = doc.data()
+                prodUpdate.store = change.after.data()
+                db.collection("products").doc(doc.id).update(prodUpdate)
+                .then((ret) => {
+                    console.log("PRODUCTO ACTUALIZADA OK", ret);
+                })
+                .catch(function(error) {
+                    console.error("ERROR AL ACTUALIZAR PRODUCTO", error);
+                });
+            });
+            /*var asoc = docAssoc.data()
+            asoc.id = docAssoc.id
+            let storeWithoutAsoc = change.after.data()
+            storeWithoutAsoc.id = context.params.storeId
+            delete storeWithoutAsoc.association
+            var arrStores = []
+            asoc.stores.forEach((val)=>{
+              if(val.id === storeWithoutAsoc.id){
+                arrStores.push(storeWithoutAsoc)
+              }else{
+                arrStores.push(val)
+              }
+            })
+            asoc.stores = arrStores*/
+
+          })
       })
       .catch(function(error) {
           console.error("ERROR AL ACTUALIZAR", error);
@@ -152,7 +183,6 @@ exports.createProductPublic = functions.firestore
           name: doc.data().name,
           logo:doc.data().logo,
           verticalImage:doc.data().verticalImage,
-          poster:doc.data().poster,
           showInHome:doc.data().showInHome,
           showInApp:doc.data().showInApp
         }
@@ -179,7 +209,6 @@ exports.updateProductPublic = functions.firestore
         name: change.after.data().name,
         logo:change.after.data().logo,
         verticalImage:change.after.data().verticalImage,
-        poster:change.after.data().poster,
         showInHome:change.after.data().showInHome,
         showInApp:change.after.data().showInApp
       }
@@ -219,7 +248,8 @@ exports.createAssociationPublic = functions.firestore
           logo: doc.data().logo,
           verticalImage:doc.data().verticalImage,
           showInHome:doc.data().showInHome,
-          showInApp:doc.data().showInApp
+          showInApp:doc.data().showInApp,
+          address:doc.data().address
         }
         db.collection("associationPublic").doc(context.params.associationId).set(objPublic)
         .then(() => {
@@ -244,7 +274,8 @@ exports.updateAssociationPublic = functions.firestore
         logo: change.after.data().logo,
         verticalImage:change.after.data().verticalImage,
         showInHome:change.after.data().showInHome,
-        showInApp:change.after.data().showInApp
+        showInApp:change.after.data().showInApp,
+        address:change.after.data().address
       }
       db.collection("associationPublic").doc(context.params.associationId).update(objPublic)
       .then((ret) => {

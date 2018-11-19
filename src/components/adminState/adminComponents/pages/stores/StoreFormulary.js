@@ -47,18 +47,16 @@ export class StoreFormulary extends Component{
 
         })
       }
-
-      this.state.errorTree={
+      this.state.errorTree = {
+        code:true,
+        name:true,
+        domain:true,
+        phoneNumber:true,
+        address:true
       }
       this.state.loading=false
     }
-    this.state.errorTree = {
-      code:true,
-      name:true,
-      domain:true,
-      phoneNumber:true,
-      address:true
-    }
+
   }
 
   render(){
@@ -132,7 +130,7 @@ export class StoreFormulary extends Component{
   _paramsSection0=()=>{
       var showAsoc
       if(!this.props.associationInputInvisible){
-        showAsoc = <Select inputTitle="Asociacón" resourceName="association" required={true} url={"association"} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.association}/>
+        showAsoc = <Select inputTitle="Asociacón" resourceName="association" required={false} url={"association"} showFields={["code", "name"]} onResults={this._respInput} value={this.state.objectToSave.association}/>
 
       }
       return(

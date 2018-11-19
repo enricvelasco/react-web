@@ -2,17 +2,10 @@ import React, { Component } from 'react';
 import {InputText} from '../../../../inputs/text/InputText'
 import {InputColorPicker} from '../../../../inputs/colorPicker/InputColorPicker'
 import {Checkbox} from '../../../../inputs/checkbox/Checkbox'
-import {Radio} from '../../../../inputs/radio/Radio'
-import {Select} from '../../../../inputs/select/Select'
-import {Categories} from '../../../../inputs/grid/Categories'
 import {InputArrayImages} from '../../../../inputs/images/InputArrayImages'
-import {SubgroupList} from '../../../../inputs/grid/SubgroupList'
 import {LinkColumn} from '../../../../inputs/grid/componentsColumns/LinkColumn'
-import {Users} from "../users/Users"
-import {UsersFormularyAssociation} from "../users/UsersFormularyAssociation"
 import {Address} from '../../../../inputs/address/Address'
 
-import firebase from 'firebase';
 import db from '../../../../../firebase'
 
 const sizeImage = {width:400, height:400}
@@ -37,11 +30,15 @@ export class AssociationFormulary extends Component{
         verticalImage:[],
         poster:[],
         showInHome:false,
-        showInApp:false,
-        address:null
+        showInApp:false
       }
 
-      this.state.errorTree={
+      this.state.errorTree = {
+        code:true,
+        name:true,
+        domain:true,
+        phoneNumber:true,
+        address:true
       }
       this.state.loading=false
     }
@@ -52,11 +49,11 @@ export class AssociationFormulary extends Component{
     if(this.state.loading){
       params = <div>loading...</div>
     }else{
-      if(this.state.tabSelect==0){
+      if(this.state.tabSelect===0){
         params = this._paramsSection0()
-      }else if(this.state.tabSelect==1){
+      }else if(this.state.tabSelect===1){
         params = this._paramsSection1()
-      }else if(this.state.tabSelect==2){
+      }else if(this.state.tabSelect===2){
         params = this._paramsSection2()
       }
     }
