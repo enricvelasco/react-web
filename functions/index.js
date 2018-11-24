@@ -20,36 +20,42 @@ exports.createStorePublic = functions.firestore
     .onCreate((snap, context) => {
       const db = admin.firestore();
       db.collection("stores").doc(context.params.storeId).get().then((docStore) => {
-        db.collection("storesPublic").doc(context.params.storeId).set({
-          id:docStore.id,
-          code:docStore.data().code,
-          name:docStore.data().name,
-          logo:docStore.data().logo,
-          verticalImage:docStore.data().verticalImage,
-          showInHome:docStore.data().showInHome,
-          showInApp:docStore.data().showInApp,
-          address:docStore.data().address
-        })
-        .then(() => {
-            db.collection("association").doc(docStore.data().association.id).get().then((docAssoc) => {
-              var asoc = docAssoc.data()
-              asoc.id = docAssoc.id
-              let storeWithoutAsoc = docStore.data()
-              storeWithoutAsoc.id = docStore.id
-              delete storeWithoutAsoc.association
-              asoc.stores.push(storeWithoutAsoc)
-              db.collection("association").doc(asoc.id).update(asoc)
-              .then((ret) => {
-                  console.log("ASOCIACION ACTUALIZADA OK", ret);
+        db.collection("associationPublic").doc(docStore.data().association.id).get().then((docAssocPublic) => {
+          db.collection("storesPublic").doc(context.params.storeId).set({
+            id:docStore.id,
+            code:docStore.data().code,
+            name:docStore.data().name,
+            logo:docStore.data().logo,
+            verticalImage:docStore.data().verticalImage,
+            showInHome:docStore.data().showInHome,
+            showInApp:docStore.data().showInApp,
+            address:docStore.data().address,
+            associationPublic:docAssocPublic.data()
+          })
+          .then(() => {
+              db.collection("association").doc(docStore.data().association.id).get().then((docAssoc) => {
+                var asoc = docAssoc.data()
+                asoc.id = docAssoc.id
+                let storeWithoutAsoc = docStore.data()
+                storeWithoutAsoc.id = docStore.id
+                delete storeWithoutAsoc.association
+                asoc.stores.push(storeWithoutAsoc)
+                db.collection("association").doc(asoc.id).update(asoc)
+                .then((ret) => {
+                    console.log("ASOCIACION ACTUALIZADA OK", ret);
+                })
+                .catch(function(error) {
+                    console.error("ERROR AL ACTUALIZAR ASOCIACION", error);
+                });
               })
-              .catch(function(error) {
-                  console.error("ERROR AL ACTUALIZAR ASOCIACION", error);
-              });
-            })
+          })
+          .catch(function(error) {
+              console.error("ERROR AL CREAR TIENDA PUBLICA", error);
+          });
+
+        }).catch(function(error){
+          console.error("ERROR AL RECUPERAR ASOC PUBLICA", error);
         })
-        .catch(function(error) {
-            console.error("ERROR AL CREAR TIENDA PUBLICA", error);
-        });
       })
     }
   );
@@ -67,66 +73,56 @@ exports.updateStoresPublic = functions.firestore
         showInApp:change.after.data().showInApp,
         address:change.after.data().address
       }
-      db.collection("storesPublic").doc(context.params.storeId).update(objPublic)
-      .then((ret) => {
-          db.collection("association").doc(change.after.data().association.id).get().then((docAssoc) => {
-            var asoc = docAssoc.data()
-            asoc.id = docAssoc.id
-            let storeWithoutAsoc = change.after.data()
-            storeWithoutAsoc.id = context.params.storeId
-            delete storeWithoutAsoc.association
-            var arrStores = []
-            asoc.stores.forEach((val)=>{
-              if(val.id === storeWithoutAsoc.id){
-                arrStores.push(storeWithoutAsoc)
-              }else{
-                arrStores.push(val)
-              }
+      db.collection("associationPublic").doc(change.after.data().association.id).get().then((docAssocPublic) => {
+        objPublic.associationPublic = docAssocPublic.data()
+        db.collection("storesPublic").doc(context.params.storeId).update(objPublic)
+        .then((ret) => {
+            db.collection("association").doc(change.after.data().association.id).get().then((docAssoc) => {
+              var asoc = docAssoc.data()
+              asoc.id = docAssoc.id
+              let storeWithoutAsoc = change.after.data()
+              storeWithoutAsoc.id = context.params.storeId
+              delete storeWithoutAsoc.association
+              var arrStores = []
+              asoc.stores.forEach((val)=>{
+                if(val.id === storeWithoutAsoc.id){
+                  arrStores.push(storeWithoutAsoc)
+                }else{
+                  arrStores.push(val)
+                }
+              })
+              asoc.stores = arrStores
+              db.collection("association").doc(asoc.id).update(asoc)
+              .then((ret) => {
+                  console.log("ASOCIACION ACTUALIZADA OK", ret);
+              })
+              .catch(function(error) {
+                  console.error("ERROR AL ACTUALIZAR ASOCIACION", error);
+              });
             })
-            asoc.stores = arrStores
-            db.collection("association").doc(asoc.id).update(asoc)
-            .then((ret) => {
-                console.log("ASOCIACION ACTUALIZADA OK", ret);
+            console.log("PRE UPDATE PRODUCT");
+            db.collection("products").where("store.id","==",context.params.storeId).get().then((querySnapshot) => {
+              querySnapshot.forEach(function(doc) {
+                  // doc.data() is never undefined for query doc snapshots
+                  console.log(doc.id, " => ", doc.data());
+                  let prodUpdate = doc.data()
+                  prodUpdate.store = change.after.data()
+                  db.collection("products").doc(doc.id).update(prodUpdate)
+                  .then((ret) => {
+                      console.log("PRODUCTO ACTUALIZADA OK", ret);
+                  })
+                  .catch(function(error) {
+                      console.error("ERROR AL ACTUALIZAR PRODUCTO", error);
+                  });
+              });
             })
-            .catch(function(error) {
-                console.error("ERROR AL ACTUALIZAR ASOCIACION", error);
-            });
-          })
-          console.log("PRE UPDATE PRODUCT");
-          db.collection("products").where("store.id","==",context.params.storeId).get().then((querySnapshot) => {
-            querySnapshot.forEach(function(doc) {
-                // doc.data() is never undefined for query doc snapshots
-                console.log(doc.id, " => ", doc.data());
-                let prodUpdate = doc.data()
-                prodUpdate.store = change.after.data()
-                db.collection("products").doc(doc.id).update(prodUpdate)
-                .then((ret) => {
-                    console.log("PRODUCTO ACTUALIZADA OK", ret);
-                })
-                .catch(function(error) {
-                    console.error("ERROR AL ACTUALIZAR PRODUCTO", error);
-                });
-            });
-            /*var asoc = docAssoc.data()
-            asoc.id = docAssoc.id
-            let storeWithoutAsoc = change.after.data()
-            storeWithoutAsoc.id = context.params.storeId
-            delete storeWithoutAsoc.association
-            var arrStores = []
-            asoc.stores.forEach((val)=>{
-              if(val.id === storeWithoutAsoc.id){
-                arrStores.push(storeWithoutAsoc)
-              }else{
-                arrStores.push(val)
-              }
-            })
-            asoc.stores = arrStores*/
-
-          })
+        })
+        .catch(function(error) {
+            console.error("ERROR AL ACTUALIZAR", error);
+        });
+      }).catch(function(error){
+        console.log("ERROR AL RECUPERAR ASOC PUBLICA");
       })
-      .catch(function(error) {
-          console.error("ERROR AL ACTUALIZAR", error);
-      });
 });
 
 exports.deleteStoresPublic = functions.firestore
@@ -251,14 +247,34 @@ exports.createAssociationPublic = functions.firestore
           showInApp:doc.data().showInApp,
           address:doc.data().address
         }
-        db.collection("associationPublic").doc(context.params.associationId).set(objPublic)
-        .then(() => {
-            console.log("Document successfully written!");
-        })
-        .catch(function(error) {
-            console.error("ERROR AL AÑADIR", error);
-        });
+        db.collection("storesPublic").where("associationPublic.id", "==", context.params.associationId).get().then((arrayStoresPublicResp) => {
+          var arrayStoresPublic = []
+          var arrayProductsPublic = []
+          arrayStoresPublicResp.stores.forEach((storePublic)=>{
+            arrayStoresPublic.push(storePublic)
 
+            db.collection("productsPublic").where("storePublic.id", "==", storePublic.id).get().then((arrayProductsPublicResp) => {
+              arrayProductsPublicResp.stores.forEach((productPublic)=>{
+                arrayProductsPublic.pus
+              })
+            })
+
+
+          })
+          objPublic.storesPublic = arrayStoresPublic
+
+
+
+          db.collection("associationPublic").doc(context.params.associationId).set(objPublic)
+          .then(() => {
+              console.log("Document successfully written!");
+          })
+          .catch(function(error) {
+              console.error("ERROR AL AÑADIR", error);
+          });
+        }).catch((error)=>{
+          console.log("ERROR AL RECUPERAR STORES PUBLIC");
+        })
       }).catch((err)=>{
         console.log(err);
       });
