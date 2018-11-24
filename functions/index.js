@@ -182,15 +182,36 @@ exports.createProductPublic = functions.firestore
           showInHome:doc.data().showInHome,
           showInApp:doc.data().showInApp
         }
-
-        db.collection("productsPublic").doc(context.params.productId).set(objPublic)
-        .then(() => {
-            console.log("Document successfully written!");
+        db.collection("storesPublic").doc(doc.data().store.id).get().then((storePublicData) => {
+          objPublic.storePublic = storePublicData.data()
+          db.collection("productsPublic").doc(context.params.productId).set(objPublic)
+          .then(() => {
+              console.log("Document successfully written!");
+              //sobreescibir en tiendas y asociaciones
+              var productToStore = {}
+              productToStore = objPublic
+              delete productToStore.storePublic
+              storePublicData.productPublic.push(productToStore)
+              db.collection("storesPublic").doc(storePublicData.id).update(storePublicData).then((ret) => {
+                  console.log("UPDATED OK", ret);
+              })
+              .catch(function(error) {
+                  console.error("ERROR AL ACTUALIZAR", error);
+              });
+              db.collection("associationPublic").doc(doc.data().store.association.id).get().then((associationPublicData) => {
+                var asocPublic = associationPublicData.data()
+                asocPublic.productsPublic.push(objPublic)
+                db.collection("associationPublic").doc(associationPublicData.id).update(asocPublic).then((ret) => {
+                  console.log("ASOC UPDATED OK");
+                }).catch((error)=>{console.log("ERROR ON UPDATE ASOC");})
+              })
+          })
+          .catch(function(error) {
+              console.error("ERROR AL AÑADIR", error);
+          });
+        }).catch((error)=>{
+          console.log("ERROR AL RECUPERAR STORE PUBLIC");
         })
-        .catch(function(error) {
-            console.error("ERROR AL AÑADIR", error);
-        });
-
       }).catch((err)=>{
         console.log(err);
       });
