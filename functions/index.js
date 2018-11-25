@@ -13,9 +13,314 @@ admin.initializeApp(functions.config().firebase);
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //  response.send("Hello from Firebase!");
 // });
+var _montarCamposAsociacionPublic = (data) =>{
+  return {
+    id: data.id,
+    code: data.code,
+    name: data.name,
+    logo: data.logo,
+    verticalImage:data.verticalImage,
+    showInHome:data.showInHome,
+    showInApp:data.showInApp,
+    address:data.address
+  }
+}
+var _montarCamposStorePublic = (data) =>{
+  var objStoreResp = {
+                        id: data.id,
+                        code: data.code,
+                        name: data.name,
+                        logo: data.logo,
+                        verticalImage:data.verticalImage,
+                        showInHome:data.showInHome,
+                        showInApp:data.showInApp,
+                        address:data.address
+                      }
+  objStoreResp.associationPublic = _montarCamposAsociacionPublic(data.association)
+  return objStoreResp
+}
+var _montarCamposProductoPublic = (data)=>{
+  var objProductResp = {
+                        id: data.id,
+                        code: data.code,
+                        name: data.name,
+                        logo:data.logo,
+                        verticalImage:data.verticalImage,
+                        showInHome:data.showInHome,
+                        showInApp:data.showInApp
+                      }
+  objProductResp.storePublic = _montarCamposStorePublic(data.store)
+  return objProductResp
+}
+
+//CREAR ASOC
+exports.createAssociationPublic = functions.firestore
+    .document('association/{associationId}')//params: { associationId: 'bgQF9MYa1jmhsU7pv62l' }
+    .onCreate((snap, context) => {
+      const db = admin.firestore();
+      //1º Guardar la asociacion PUBLICA
+      return db.collection("association").doc(context.params.associationId).get().then((docAsociacion) => {
+        docAsociacion.data().id = docAsociacion.id
+        var objetoAsocPublico = _montarCamposAsociacionPublic(docAsociacion.data())
+        db.collection("associationPublic").doc(objetoAsocPublico.id).set(objetoAsocPublico).then(()=>{
+          console.log("ASOCIACION PUBLICA GUARDADA CORRECTAMENTE");
+        }).catch((error)=>{
+          console.log("ERROR AL GUARDAR ASOC PUBLICA::", error);
+        })
+      }).catch((error)=>{
+        console.log("ERROR AL RECUPERAR ASOCIACION", error);
+      })
+    });
+
+//CREAR STORES
+exports.createStorePublic = functions.firestore
+    .document('stores/{storeId}')//params: { associationId: 'bgQF9MYa1jmhsU7pv62l' }
+    .onCreate((snap, context) => {
+      const db = admin.firestore();
+      //1º Guardar la store PUBLICA
+      return db.collection("stores").doc(context.params.storeId).get().then((docStore) => {
+        docStore.data().id = docStore.id
+        var objetoStorePublico = _montarCamposStorePublic(docStore.data())
+        db.collection("storesPublic").doc(objetoStorePublico.id).set(objetoStorePublico).then(()=>{
+          console.log("STORE PUBLICA GUARDADA CORRECTAMENTE");
+          //AÑADIR STORE A ASOCIACIONES PARA BIG DATA -----------!!!
+        }).catch((respErr)=>{
+          console.log("ERROR AL GUARDAT STORE PUBLIC", respErr);
+        })
+      }).catch((respErr)=>{
+        console.log("ERROR AL RECUPERAR STORE", respErr);
+      })
+    });
+
+//CREAR PRODUCTOS
+exports.createProductPublic = functions.firestore
+    .document('products/{productId}')//params: { associationId: 'bgQF9MYa1jmhsU7pv62l' }
+    .onCreate((snap, context) => {
+      const db = admin.firestore();
+      return db.collection("products").doc(context.params.productId).get().then((docProduct) => {
+        docProduct.data().id = docProduct.id
+        var objetoProductPublic = _montarCamposProductoPublic(docProduct.data())
+        db.collection("productsPublic").doc(objetoProductPublic.id).set(objetoProductPublic).then(()=>{
+          console.log("PRODUCTO PUBLICA GUARDADA CORRECTAMENTE");
+          //AÑADIR PRODUCTO A TIENDAS Y ASSOCIATIONS PARA BIGDATA
+        }).catch((respErr)=>{
+          console.log("ERROR AL GUARDAT PRDUCTO::",respErr);
+        })
+      }).catch((respErr)=>{
+        console.log("ERROR AL RECUPERAR PRDUCTO::",respErr);
+      })
+    });
+
+
+//ACTUALIZAR ASOCIACIONES
+exports.updateAssociationPublic = functions.firestore
+    .document('association/{associationId}')
+    .onUpdate((change, context) => {
+      const db = admin.firestore();
+      var objetoAsocPublicoUpdate = _montarCamposAsociacionPublic(change.after.data())
+      return db.collection("associationPublic").doc(objetoAsocPublicoUpdate.id).update(objetoAsocPublicoUpdate)
+      .then(() => {
+          console.log("UPDATED OK -> next actualizar tiendas y productos");
+          //HAY QUE ACTUALIZAR LAS ASOCIACIONES DE TIENDAS Y PRODYUCTOS
+          //PRIVADOS
+          db.collection("stores").where("association.id","==",change.after.data().id).get().then((docArrStores) => {
+            docArrStores.forEach((storeLoop)=>{
+              storeLoop.data().association = change.after.data()
+              db.collection("stores").doc(storeLoop.data().id).update(storeLoop.data()).then(()=>{
+                //ACTUALIZO LOS PRODUCTOS
+                db.collection("products").where("store.id","==",storeLoop.id).get().then((docArrProducts) => {
+                  docArrProducts.forEach((productLoop)=>{
+                    productLoop.data().store = storeLoop.data()
+                    db.collection("products").doc(productLoop.data().id).update(productLoop.data()).then(()=>{})
+                  })
+                })
+              })
+            })
+          })
+          //PUBLICOS
+          db.collection("storesPublic").where("associationPublic.id","==",objetoAsocPublicoUpdate.id).get().then((docArrStoresPublic) => {
+            docArrStoresPublic.forEach((storePublicLoop)=>{
+              storePublicLoop.data().associationPublic = objetoAsocPublicoUpdate
+              db.collection("storesPublic").doc(storePublicLoop.data().id).update(storePublicLoop.data()).then(()=>{
+                //ACTUALIZO LOS PRODUCTOS
+                db.collection("productsPublic").where("storePublic.id","==",storePublicLoop.id).get().then((docArrProductsPublic) => {
+                  docArrProductsPublic.forEach((productPublicLoop)=>{
+                    productPublicLoop.data().storePublic = storePublicLoop.data()
+                    db.collection("productsPublic").doc(productPublicLoop.data().id).update(productPublicLoop.data()).then(()=>{})
+                  })
+                })
+              })
+            })
+          })
+      })
+      .catch(function(error) {
+          console.error("ERROR AL ACTUALIZAR - NO EXISTE", error);
+          db.collection("association").doc(context.params.associationId).get().then((docAsociacion) => {
+            docAsociacion.data().id = docAsociacion.id
+            var objetoAsocPublico = _montarCamposAsociacionPublic(docAsociacion.data())
+            db.collection("associationPublic").doc(objetoAsocPublico.id).set(objetoAsocPublico).then(()=>{
+              console.log("ASOCIACION PUBLICA GUARDADA CORRECTAMENTE");
+            }).catch((error)=>{
+              console.log("ERROR AL GUARDAR ASOC PUBLICA::", error);
+            })
+          }).catch((error)=>{
+            console.log("ERROR AL RECUPERAR ASOCIACION", error);
+          })
+      });
+    });
+
+
+//ACTUALIZAR STORES
+exports.updateStoresPublic = functions.firestore
+    .document('stores/{storeId}')
+    .onUpdate((change, context) => {
+      const db = admin.firestore();
+      var objetoStorePublicoUpdate = _montarCamposStorePublic(change.after.data())
+      return db.collection("storesPublic").doc(objetoStorePublicoUpdate.id).update(objetoStorePublicoUpdate).then(()=>{
+        console.log("UPDATED OK -> next actualiza producto publico");
+        //PRIVATE
+        db.collection("products").where("store.id","==",change.after.data().id).get().then((docArrProducts) => {
+          docArrProducts.forEach((productLoop)=>{
+            productLoop.data().store = change.after.data()
+            db.collection("products").doc(productLoop.data().id).update(productLoop.data()).then(()=>{})
+          })
+        })
+        //PUBLIC
+        db.collection("productsPublic").where("storePublic.id","==",objetoStorePublicoUpdate.id).get().then((docArrProductsPublic) => {
+          docArrProductsPublic.forEach((productPublicLoop)=>{
+            productPublicLoop.data().storePublic = objetoStorePublicoUpdate
+            db.collection("productsPublic").doc(productPublicLoop.data().id).update(productPublicLoop.data()).then(()=>{})
+          })
+        })
+      }).catch((respErr)=>{
+        console.log("ERROR UPDATE STORE - NO EXISTE?", respErr);
+        db.collection("stores").doc(context.params.storeId).get().then((docStore) => {
+          docStore.data().id = docStore.id
+          var objetoStorePublico = _montarCamposStorePublic(docStore.data())
+          db.collection("storesPublic").doc(objetoStorePublico.id).set(objetoStorePublico).then(()=>{
+            console.log("STORE PUBLICA GUARDADA CORRECTAMENTE");
+            //AÑADIR STORE A ASOCIACIONES PARA BIG DATA -----------!!!
+          }).catch((respErr)=>{
+            console.log("ERROR AL GUARDAT STORE PUBLIC", respErr);
+          })
+        }).catch((respErr)=>{
+          console.log("ERROR AL RECUPERAR STORE", respErr);
+        })
+      })
+    });
+
+//ACTUALIZAR PRODUCTOS
+exports.updateProductPublic = functions.firestore
+    .document('products/{productId}')
+    .onUpdate((change, context) => {
+      const db = admin.firestore();
+      var objetoProductPublicUpdate = _montarCamposProductoPublic(change.after.data())
+      return db.collection("productsPublic").doc(context.params.productId).update(objetoProductPublicUpdate)
+      .then(() => {
+          console.log("UPDATED OK");
+      })
+      .catch(function(error) {
+          console.error("ERROR AL ACTUALIZAR - NO EXISTE?", error);
+          db.collection("products").doc(context.params.productId).get().then((docProduct) => {
+            docProduct.data().id = docProduct.id
+            var objetoProductPublic = _montarCamposProductoPublic(docProduct.data())
+            db.collection("productsPublic").doc(objetoProductPublic.id).set(objetoProductPublic).then(()=>{
+              console.log("PRODUCTO PUBLICA GUARDADA CORRECTAMENTE");
+              //AÑADIR PRODUCTO A TIENDAS Y ASSOCIATIONS PARA BIGDATA
+            }).catch((respErr)=>{
+              console.log("ERROR AL GUARDAT PRDUCTO::",respErr);
+            })
+          }).catch((respErr)=>{
+            console.log("ERROR AL RECUPERAR PRDUCTO::",respErr);
+          })
+      });
+    });
+
+
+//DELETE ASOCIACION
+exports.deleteAssociationPublic = functions.firestore
+    .document('association/{associationId}')
+    .onDelete((change, context) => {
+      const db = admin.firestore();
+      db.collection("associationPublic").doc(context.params.associationId).delete().then(() =>{
+          console.log("Document successfully deleted!");
+          //RECUPERAR TIENDAS Y ELIMINAR DICHA ASOC
+          //PRIVATE
+          db.collection("stores").where("association.id","==",context.params.associationId).get().then((docArrStores) => {
+            docArrStores.forEach((storeLoop)=>{
+              storeLoop.data().association = null
+              db.collection("stores").doc(storeLoop.data().id).update(storeLoop.data()).then(()=>{
+                //ACTUALIZO LOS PRODUCTOS
+                db.collection("products").where("store.id","==",storeLoop.id).get().then((docArrProducts) => {
+                  docArrProducts.forEach((productLoop)=>{
+                    productLoop.data().store = storeLoop.data()
+                    db.collection("products").doc(productLoop.data().id).update(productLoop.data()).then(()=>{})
+                  })
+                })
+              })
+            })
+          })
+          //PUBLIC
+          db.collection("storesPublic").where("associationPublic.id","==",context.params.associationId).get().then((docArrStoresPublic) => {
+            docArrStoresPublic.forEach((storePublicLoop)=>{
+              storePublicLoop.data().associationPublic = null
+              db.collection("storesPublic").doc(storePublicLoop.data().id).update(storePublicLoop.data()).then(()=>{
+                //ACTUALIZO LOS PRODUCTOS
+                db.collection("productsPublic").where("storePublic.id","==",storePublicLoop.id).get().then((docArrProductsPublic) => {
+                  docArrProductsPublic.forEach((productPublicLoop)=>{
+                    productPublicLoop.data().storePublic = storePublicLoop.data()
+                    db.collection("productsPublic").doc(productPublicLoop.data().id).update(productPublicLoop.data()).then(()=>{})
+                  })
+                })
+              })
+            })
+          })
+      }).catch(function(error) {
+          console.error("Error removing document: ", error);
+      });
+    });
+
+//DELETE STORE
+exports.deleteStoresPublic = functions.firestore
+    .document('stores/{storeId}')
+    .onDelete((snap, context) => {
+      const db = admin.firestore();
+      db.collection("storesPublic").doc(context.params.storeId).delete().then(() =>{
+          console.log("DELETED OK");
+          //ACTUALIZA LOS PRODUCTOS
+          //PRIVATE
+          db.collection("products").where("store.id","==",context.params.storeId).get().then((docArrProducts) => {
+            docArrProducts.forEach((productLoop)=>{
+              productLoop.data().store = null
+              db.collection("products").doc(productLoop.data().id).update(productLoop.data()).then(()=>{})
+            })
+          })
+          //PUBLIC
+          db.collection("productsPublic").where("storePublic.id","==",context.params.storeId).get().then((docArrProductsPublic) => {
+            docArrProductsPublic.forEach((productPublicLoop)=>{
+              productPublicLoop.data().storePublic = null
+              db.collection("productsPublic").doc(productPublicLoop.data().id).update(productPublicLoop.data()).then(()=>{})
+            })
+          })
+      }).catch(function(error) {
+          console.error("Error removing document: ", error);
+      });
+});
+
+//DELETE PRODUCTO
+exports.deleteProductPublic = functions.firestore
+    .document('products/{productId}')
+    .onDelete((change, context) => {
+      const db = admin.firestore();
+      db.collection("productsPublic").doc(context.params.productId).delete().then(() =>{
+          console.log("Document successfully deleted!");
+      }).catch(function(error) {
+          console.error("Error removing document: ", error);
+      });
+});
 
 //TIENDAS***************************************
-exports.createStorePublic = functions.firestore
+/*exports.createStorePublic = functions.firestore
     .document('stores/{storeId}')//params: { associationId: 'bgQF9MYa1jmhsU7pv62l' }
     .onCreate((snap, context) => {
       const db = admin.firestore();
@@ -332,19 +637,5 @@ exports.deleteAssociationPublic = functions.firestore
       }).catch(function(error) {
           console.error("Error removing document: ", error);
       });
-});
+});*/
 //FIN ASOCIACIONES***************************************
-
-//USERS*******************************************
-exports.createNewUserWithParams = functions.firestore
-.document('userParams/{userId}')//params: { associationId: 'bgQF9MYa1jmhsU7pv62l' }
-.onCreate((snap, context) => {
-  console.log("ENTRADA DATOS 1", context.params);
-  console.log("ENTRADA DATOS 2", snap);
-  /*admin.auth().createUserWithEmailAndPassword("").catch(function(error) {
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    // ...
-  });*/
-})
